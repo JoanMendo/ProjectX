@@ -5,7 +5,6 @@ using UnityEngine;
 public class holdAndMoveObjects : MonoBehaviour
 {
     public float pickupDistance = 3f; // Distancia máxima para agarrar objetos
-    public Transform holdPoint; // Punto frente al jugador donde se sostendrá el objeto
     public float moveSpeed = 10f; // Velocidad de movimiento del objeto
 
     public Camera playerCamera;
@@ -57,7 +56,8 @@ public class holdAndMoveObjects : MonoBehaviour
     void MoveObject()
     {
         // Mover el objeto al punto designado frente al jugador
-        Vector3 targetPosition = holdPoint.position;
+        Vector3 targetPosition = playerCamera.transform.position + playerCamera.transform.forward * pickupDistance;
+
         pickedObject.MovePosition(Vector3.Lerp(pickedObject.position, targetPosition, Time.deltaTime * moveSpeed));
     }
 }
