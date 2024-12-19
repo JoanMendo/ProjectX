@@ -8,7 +8,7 @@ public class holdAndMoveObjects : MonoBehaviour
     public float moveSpeed = 10f; // Velocidad de movimiento del objeto
 
     public Camera playerCamera;
-    private Rigidbody pickedObject;
+    private Rigidbody grabbedObject;
     void Update()
     {
         // Detectar si se mantiene pulsado el botón derecho del mouse
@@ -16,13 +16,20 @@ public class holdAndMoveObjects : MonoBehaviour
         {
             TryPickObject();
         }
+        else if (Input.GetMouseButtonDown(2))
+            PushObject();
         else if (Input.GetMouseButtonUp(0)) // Soltar al dejar de presionar
         {
             ReleaseObject();
         }
+       
+        
+        
+    }
 
-        // Mover el objeto si está agarrado
-        if (pickedObject)
+    private void FixedUpdate()
+    {
+        if (grabbedObject)
         {
             MoveObject();
         }
@@ -38,26 +45,47 @@ public class holdAndMoveObjects : MonoBehaviour
             Rigidbody rb = hit.collider.GetComponent<Rigidbody>();
             if (rb != null)
             {
-                pickedObject = rb;
-                pickedObject.isKinematic = true; // Desactivar física mientras se mueve
+                grabbedObject = rb;
+                grabbedObject.useGravity = false; // Desactivar gravedad
             }
         }
     }
 
     void ReleaseObject()
     {
-        if (pickedObject)
+        if (grabbedObject)
         {
-            pickedObject.isKinematic = false; // Reactivar física
-            pickedObject = null;
+            grabbedObject.useGravity = true; // Activar gravedad
+            grabbedObject = null;
         }
     }
 
     void MoveObject()
     {
         // Mover el objeto al punto designado frente al jugador
+        if (Vector3.Distance(playerCamera.transform.position, grabbedObject.transform.position) > pickupDistance + 0.8f)
+        {
+            ReleaseObject();
+            return;
+        }
         Vector3 targetPosition = playerCamera.transform.position + playerCamera.transform.forward * pickupDistance;
 
-        pickedObject.MovePosition(Vector3.Lerp(pickedObject.position, targetPosition, Time.deltaTime * moveSpeed));
+        Vector3 direction = targetPosition - grabbedObject.position;
+
+        // Aplica fuerza para mover el objeto hacia el punto de agarre
+        grabbedObject.velocity = direction * 10f;
+
+        // Limita la velocidad para evitar atraviesos
+        grabbedObject.velocity = Vector3.ClampMagnitude(grabbedObject.velocity, 10f);
+    }
+
+    void PushObject()
+    {
+        if (grabbedObject)
+        {
+            grabbedObject.useGravity = true; // Activar gravedad
+            grabbedObject.AddForce(playerCamera.transform.forward * 25f, ForceMode.Impulse);
+            grabbedObject = null;
+        }
     }
 }
