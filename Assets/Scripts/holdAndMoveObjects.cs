@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class holdAndMoveObjects : MonoBehaviour
+public class HoldAndMoveObjects : MonoBehaviour
 {
     public float pickupDistance = 3f; // Distancia máxima para agarrar objetos
     public float moveSpeed = 10f; // Velocidad de movimiento del objeto
@@ -37,7 +37,7 @@ public class holdAndMoveObjects : MonoBehaviour
 
     void TryPickObject()
     {
-        int layer = LayerMask.GetMask("Interactuable");
+        int layer = LayerMask.GetMask("Movable");
         Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, pickupDistance, layer))
         {
@@ -84,7 +84,7 @@ public class holdAndMoveObjects : MonoBehaviour
         if (grabbedObject)
         {
             grabbedObject.useGravity = true; // Activar gravedad
-            grabbedObject.AddForce(playerCamera.transform.forward * 25f, ForceMode.Impulse);
+            grabbedObject.AddForce(playerCamera.transform.forward * 40f, ForceMode.Impulse);
             grabbedObject = null;
         }
     }
