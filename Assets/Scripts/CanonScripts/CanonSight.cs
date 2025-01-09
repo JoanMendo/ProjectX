@@ -7,6 +7,8 @@ public class CanonSight : MonoBehaviour, IInteractable
     public CameraManager cameraManager;
     public Camera canonCamera;
     public MonoBehaviour[] canonScripts;
+
+    private bool enabled = false;
     public void Start()
     {
         if (cameraManager == null)
@@ -14,7 +16,14 @@ public class CanonSight : MonoBehaviour, IInteractable
             cameraManager = GameObject.FindObjectOfType<CameraManager>();
         }
     }
-   
+
+    public void Update()
+    {
+        if (enabled && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Escape)))
+        {
+            Disable();
+        }
+    }
 
     public void Interact()
     {
@@ -23,6 +32,15 @@ public class CanonSight : MonoBehaviour, IInteractable
         {
             script.enabled = true;
         }
+    }
+
+    public void Disable()
+    {
+        foreach (MonoBehaviour script in canonScripts)
+        {
+            script.enabled = false;
+        }
+        cameraManager.resetActiveCamera();
     }
 
 }
