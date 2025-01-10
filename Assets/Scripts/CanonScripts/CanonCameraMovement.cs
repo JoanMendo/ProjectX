@@ -5,36 +5,31 @@ using UnityEngine;
 public class CanonCameraMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
-    public float speed = 5f; // Velocidad de movimiento
-    public float maxAngleX = 30f; // Ángulo máximo en el eje X
-    public float maxAngleY = 30f; // Ángulo máximo en el eje Y
+    public float speed = 25f; // Velocidad de movimiento
+    public float maxAngleX = 20f; // Ángulo máximo en el eje X
+    public float maxAngleY = 20f; // Ángulo máximo en el eje Yç
 
-    private Vector3 initialRotation;
-
-    private void OnDisable()
-    {
-        // Restaura la rotación inicial de la cámara
-        transform.eulerAngles = initialRotation;
-    }
-
+    private Quaternion initialRotation;
 
     void Start()
     {
-        // Guarda la rotación inicial de la cámara
-        initialRotation = transform.eulerAngles;
+        initialRotation = transform.localRotation;
     }
 
     void Update()
     {
-        // Lee la entrada del usuario
-        float inputX = Input.GetAxis("Horizontal"); // A/D o flechas izquierda/derecha
-        float inputY = Input.GetAxis("Vertical");   // W/S o flechas arriba/abajo
+        float x = Input.GetAxisRaw("Horizontal") * speed * Time.deltaTime;
+        float y = Input.GetAxisRaw("Vertical") * speed * Time.deltaTime;
 
-        // Calcula el nuevo ángulo basado en la entrada del usuario
-        float newAngleX = Mathf.Clamp(initialRotation.x - inputY * speed * Time.deltaTime, initialRotation.x - maxAngleX, initialRotation.x + maxAngleX);
-        float newAngleY = Mathf.Clamp(initialRotation.y + inputX * speed * Time.deltaTime, initialRotation.y - maxAngleY, initialRotation.y + maxAngleY);
+        Quaternion rotationX = Quaternion.AngleAxis(-y, Vector3.right);
+        Quaternion rotationY = Quaternion.AngleAxis(x, Vector3.up);
 
-        // Aplica la nueva rotación
-        transform.eulerAngles = new Vector3(newAngleX, newAngleY, transform.eulerAngles.z);
+        transform.localRotation = initialRotation * rotationX * rotationY;
+
+        transform.localEulerAngles = new Vector3(
+            Mathf.Clamp(transform.localEulerAngles.x, 0, maxAngleX),
+            Mathf.Clamp(transform.localEulerAngles.y, 0, maxAngleY),
+            transform.localEulerAngles.z
+        );
     }
 }
