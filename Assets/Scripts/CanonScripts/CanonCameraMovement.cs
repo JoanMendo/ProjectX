@@ -11,25 +11,29 @@ public class CanonCameraMovement : MonoBehaviour
 
     private Quaternion initialRotation;
 
-    void Start()
+    private void OnDisable()
     {
-        initialRotation = transform.localRotation;
+        transform.rotation = initialRotation;
     }
 
-    void Update()
+
+    void Start()
     {
-        float x = Input.GetAxisRaw("Horizontal") * speed * Time.deltaTime;
-        float y = Input.GetAxisRaw("Vertical") * speed * Time.deltaTime;
+        initialRotation = transform.rotation;
+        Debug.Log("Initial rotation: " + initialRotation);
+    }
 
-        Quaternion rotationX = Quaternion.AngleAxis(-y, Vector3.right);
-        Quaternion rotationY = Quaternion.AngleAxis(x, Vector3.up);
+    void FixedUpdate()
+    {
+        // Lee la entrada del usuario
+        float inputX = Input.GetAxisRaw("Horizontal");
+        float inputY = Input.GetAxisRaw("Vertical");
 
-        transform.localRotation = initialRotation * rotationX * rotationY;
+        float newAngleX = Mathf.Clamp(transform.rotation.x - inputY * speed, initialRotation.x - maxAngleX, initialRotation.x + maxAngleX);
 
-        transform.localEulerAngles = new Vector3(
-            Mathf.Clamp(transform.localEulerAngles.x, 0, maxAngleX),
-            Mathf.Clamp(transform.localEulerAngles.y, 0, maxAngleY),
-            transform.localEulerAngles.z
-        );
+        float newAngleY = Mathf.Clamp(transform.rotation.y + inputX * speed, initialRotation.y - maxAngleY, initialRotation.y + maxAngleY);
+
+        if (inputX != 0 || inputY != 0)
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(newAngleX, newAngleY, 0),  speed);
     }
 }
