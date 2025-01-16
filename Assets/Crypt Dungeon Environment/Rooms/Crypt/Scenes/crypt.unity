@@ -3745,7 +3745,7 @@ PrefabInstance:
     - target: {fileID: 4459864850019384740, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
       propertyPath: fov
-      value: 75
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 4459864850019384740, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
@@ -3755,7 +3755,7 @@ PrefabInstance:
     - target: {fileID: 4459864850019384740, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
       propertyPath: sprintFOV
-      value: 80
+      value: 117.3
       objectReference: {fileID: 0}
     - target: {fileID: 4459864850019384740, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
@@ -5307,7 +5307,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2034600868}
   - component: {fileID: 2034600865}
-  - component: {fileID: 2034600867}
   - component: {fileID: 2034600866}
   - component: {fileID: 2034600869}
   m_Layer: 0
@@ -5412,14 +5411,6 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!81 &2034600867
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2034600864}
-  m_Enabled: 1
 --- !u!4 &2034600868
 Transform:
   m_ObjectHideFlags: 0
