@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Sip
-  m_Shader: {fileID: -6465566751694194690, guid: d0a5c4023ca73d3489d15709db7b090e,
+  m_Name: GlobaShaderMat
+  m_Shader: {fileID: -6465566751694194690, guid: 33bdd45d71d276448bb974146813492f,
     type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -37,11 +37,6 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
-    m_Floats:
-    - _ColorThreshold: 1.12
-    - _DepthThreshold: 1.06
-    - _NormalThreshold: 0.51
-    - _ONLYOUTLINE: 0
-    m_Colors:
-    - _OutlineColor: {r: 0, g: 0, b: 0, a: 0}
+    m_Floats: []
+    m_Colors: []
   m_BuildTextureStacks: []
