@@ -41,8 +41,8 @@ Material:
     m_Ints: []
     m_Floats:
     - _BOOLEAN: 1
-    - _ColorStep: 5
-    - _DepthStep: 5
+    - _ColorStep: 250
+    - _DepthStep: 8
     - _Fullscreen_AlphaBlendOperation: 0
     - _Fullscreen_BlendMode: 4
     - _Fullscreen_ColorBlendOperation: 0
@@ -54,6 +54,9 @@ Material:
     - _Fullscreen_SrcColorBlend: 2
     - _NormalStep: 1.3
     - _ONLYOUTLINE: 0
+    - _OutlineGrosor: 1
+    - _SEEDEPTH: 0
+    - _SEENORMALS: 0
     - _SEEOUTLINE: 1
     m_Colors:
     - _OutlineColor: {r: 1, g: 1, b: 1, a: 0}
