@@ -2,50 +2,67 @@ using UnityEngine;
 
 public class AimController : MonoBehaviour
 {
-    public Animator cannonAnimator; // Asigna este Animator desde el Inspector
-    private float animationTime;    // Progreso actual de la animación (0 a 1)
-    private bool isPaused = false;  // Indica si la animación está pausada
+    public Animator cannonAnimator;
+    private float animationTime = 0.5f;
+    public float animationStep = 0.01f;
+    private bool isPlayerInTrigger = false;
+    private bool isScrolling = false;
 
+
+    [SerializeField] Camera AimCam;
+    [SerializeField] Camera playerMainCamera;
+
+    private void Start()
+    {
+        AimCam.enabled = false;
+    }
     void Update()
     {
-        float mouseInput = Input.GetAxis("Mouse ScrollWheel");
-
-        if (mouseInput != 0)
+        if (isPlayerInTrigger)
         {
-            // Reiniciar la animación desde el punto pausado si estaba detenida
-            if (isPaused)
-            {
-                AnimatorStateInfo currentState = cannonAnimator.GetCurrentAnimatorStateInfo(0);
-                cannonAnimator.Play(currentState.shortNameHash, 0, animationTime);
-                isPaused = false;
-            }
+            float mouseInput = Input.GetAxis("Mouse ScrollWheel");
 
-            // Scroll hacia abajo
-            if (mouseInput < 0)
+            if (mouseInput != 0)
             {
-                cannonAnimator.SetBool("IsMovingDown", true);
-                cannonAnimator.SetBool("IsMovingUp", false);
+                isScrolling = true;
+
+                if (mouseInput > 0)
+                {
+                    animationTime += animationStep;
+                }
+                else if (mouseInput < 0)
+                {
+                    animationTime -= animationStep;
+                }
+
+                animationTime = Mathf.Clamp01(animationTime);
+
+                cannonAnimator.Play("Aim_Small_Cannon", 0, animationTime);
             }
-            // Scroll hacia arriba
-            else if (mouseInput > 0)
+            else if (isScrolling)
             {
-                cannonAnimator.SetBool("IsMovingUp", true);
-                cannonAnimator.SetBool("IsMovingDown", false);
+                isScrolling = false;
+                cannonAnimator.speed = 0;
             }
         }
-        else
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
         {
-            // Capturar el estado actual de la animación cuando no hay movimiento
-            if (!isPaused)
-            {
-                AnimatorStateInfo currentState = cannonAnimator.GetCurrentAnimatorStateInfo(0);
-                animationTime = currentState.normalizedTime % 1; // Progreso actual de la animación
-                isPaused = true;
-            }
+            isPlayerInTrigger = true;
+            AimCam.enabled = true;
+            playerMainCamera.enabled = false;
+        }
+    }
 
-            // Detener las animaciones de movimiento
-            cannonAnimator.SetBool("IsMovingUp", false);
-            cannonAnimator.SetBool("IsMovingDown", false);
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            isPlayerInTrigger = false;
+            AimCam.enabled = false;
+            playerMainCamera.enabled = true;
         }
     }
 }

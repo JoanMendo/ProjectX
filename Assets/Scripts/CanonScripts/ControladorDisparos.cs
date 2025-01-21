@@ -54,17 +54,7 @@ public class ControladorDisparos : MonoBehaviour
             prepararDisparo();
 
         }
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            // Rota el cilindro en su eje X local hacia la izquierda
-            cilindro.transform.Rotate(Vector3.left, Space.Self);  // Usamos Space.Self para especificar que la rotación es local
-        }
-
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            // Rota el cilindro en su eje X local hacia la derecha
-            cilindro.transform.Rotate(-Vector3.left, Space.Self);  // Usamos -Vector3.left para rotar hacia la derecha en el eje X local
-        }
+       
     }
 
 
