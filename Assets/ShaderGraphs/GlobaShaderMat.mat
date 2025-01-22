@@ -41,7 +41,7 @@ Material:
     - _BOOLEAN: 0
     - _ColorStep: 125
     - _DepthStep: 0.7
-    - _DepthStep2: 0.05
+    - _DepthStep2: 0.04
     - _Fullscreen_AlphaBlendOperation: 0
     - _Fullscreen_BlendMode: 4
     - _Fullscreen_ColorBlendOperation: 0

@@ -11,6 +11,10 @@ public class ControladorDisparos : MonoBehaviour
     public bool limpiado = true;
     public bool cargado = true;
     public AudioSource sonido;
+    public LineRenderer lineRenderer; // Para proyectar la trayectoria
+    public int puntosTrayectoria = 30; // Número de puntos en la línea
+    public float tiempoSimulacion = 2f; // Tiempo máximo para simular la trayectoria
+    public LayerMask capasDeColision; // Capas con las que la trayectoria puede colisionar
 
 
 
@@ -35,7 +39,7 @@ public class ControladorDisparos : MonoBehaviour
 
         if (disparando != null)
         {
-            sonido.Play();  
+            sonido.Play();
             disparando.Disparar(posicion_de_disparo);
             // Llama a la función que necesitas
         }
@@ -45,18 +49,82 @@ public class ControladorDisparos : MonoBehaviour
         }
     }
 
+    private void MostrarTrayectoria()
+    {
+        if (cilindro == null || projectil == null || lineRenderer == null)
+        {
+            Debug.LogWarning("Faltan referencias para mostrar la trayectoria.");
+            return;
+        }
+
+        // Configurar los parámetros iniciales
+        Vector3 posicionInicial = posicion_de_disparo.transform.position;
+        Vector3 direccion = cilindro.transform.forward.normalized;
+
+        // Fuerza inicial aplicada (convertida en velocidad inicial según masa y ForceMode.Impulse)
+        Rigidbody rb = projectil.GetComponent<Rigidbody>();
+        if (rb == null)
+        {
+            Debug.LogError("El proyectil necesita un Rigidbody.");
+            return;
+        }
+
+        float masa = rb.mass; // Masa del proyectil
+        Vector3 velocidadInicial = (direccion * 50f + Vector3.up * 5f) / masa;
+
+        // Configurar LineRenderer
+        lineRenderer.positionCount = puntosTrayectoria;
+
+        // Simular la trayectoria
+        Vector3 posicionActual = posicionInicial;
+        Vector3 velocidadActual = velocidadInicial;
+
+        for (int i = 0; i < puntosTrayectoria; i++)
+        {
+            // Tiempo basado en el índice
+            float tiempo = i * (tiempoSimulacion / puntosTrayectoria);
+
+            // Calcular posición usando física
+            Vector3 desplazamiento = velocidadInicial * tiempo + 0.5f * Physics.gravity * tiempo * tiempo;
+            Vector3 nuevaPosicion = posicionInicial + desplazamiento;
+
+            lineRenderer.SetPosition(i, nuevaPosicion);
+
+            // Verificar colisión con Raycast
+            if (i > 0)
+            {
+                Vector3 direccionRay = nuevaPosicion - lineRenderer.GetPosition(i - 1);
+                float distancia = direccionRay.magnitude;
+
+                if (Physics.Raycast(lineRenderer.GetPosition(i - 1), direccionRay.normalized, out RaycastHit hit, distancia, capasDeColision))
+                {
+                    lineRenderer.positionCount = i + 1;
+                    lineRenderer.SetPosition(i, hit.point);
+                    break;
+                }
+            }
+        }
+    }
+
+
+
+
     private void Update()
     {
-        Debug.Log($"Limpiado: {limpiado}, Cargado: {cargado}");
+
+        MostrarTrayectoria();
+
+
+
         if (Input.GetKeyDown(KeyCode.F))
         {
             Debug.Log("enteoria se esta disparando");
             prepararDisparo();
 
         }
-       
+
+
+
+
     }
-
-
-
 }
