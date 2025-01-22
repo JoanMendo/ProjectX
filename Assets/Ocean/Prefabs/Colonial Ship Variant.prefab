@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 4328122300629042580}
   serializedVersion: 2
   m_LocalRotation: {x: 5.1070255e-15, y: -0.10844821, z: 0.000000004740428, w: 0.9941021}
-  m_LocalPosition: {x: 4.49, y: -7.8, z: -25.03}
+  m_LocalPosition: {x: 4.5, y: -4, z: -25}
   m_LocalScale: {x: 0.74367, y: 0.74367, z: 0.74367}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 7157558374003051472}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.18, y: -7.8, z: 32.3}
+  m_LocalPosition: {x: 0.2, y: -4, z: 32.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -87,7 +87,7 @@ Transform:
   m_GameObject: {fileID: 7234328293383490109}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.07, y: -7.8, z: -25.22}
+  m_LocalPosition: {x: -5, y: -4, z: -25.2}
   m_LocalScale: {x: 0.74367, y: 0.74367, z: 0.74367}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -107,15 +107,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4816409469987462, guid: f855683b127eede4c9d170be2672ae27, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.05
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 4816409469987462, guid: f855683b127eede4c9d170be2672ae27, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.05
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 4816409469987462, guid: f855683b127eede4c9d170be2672ae27, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.05
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 4816409469987462, guid: f855683b127eede4c9d170be2672ae27, type: 3}
       propertyPath: m_LocalPosition.x
@@ -237,7 +237,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4df2fbb3f4770de4da1c7e434cf08230, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AirDrag: 1
+  AirDrag: 0.66
   WaterDrag: 10
   AffectDirection: 1
   AttachToSurface: 0
@@ -257,7 +257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6e3c08e10694e7459813a7cf077b86b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetPosition: {x: 75, y: 0, z: 0}
-  moveSpeed: 0.5
+  targetPosition: {x: 0, y: 0, z: -30}
+  moveSpeed: 3
   rotationSpeed: 1
   arrivalThreshold: 0.5
