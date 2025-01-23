@@ -26,13 +26,15 @@ public class TelescopeController : MonoBehaviour
     private float initialRotationY;
     private float initialRotationX;
 
-    private void Start()
+    private void Awake()
     {
         telescopeCamera.enabled = false;
         initialRotationY =   transform.localEulerAngles.y;
         Debug.Log("Initial rotation Y: " + initialRotationY);
+        Debug.Log("Min rotation Y" + (initialRotationY - VerticalAngle) + " Max rotation Y: " + (initialRotationY + VerticalAngle));
         initialRotationX = transform.localEulerAngles.x;
         Debug.Log("Initial rotation X: " + initialRotationX);
+        Debug.Log("Min rotation X" + (initialRotationX - HorizontalAngle) + " Max rotation X: " + (initialRotationX + HorizontalAngle));
     }
 
     private void Update()
@@ -75,8 +77,8 @@ public class TelescopeController : MonoBehaviour
 
     private void HandleRotation()
     {
-        moveX = Mathf.Clamp(moveX + Input.GetAxis("Mouse X") * sensitivity,   initialRotationX - HorizontalAngle, HorizontalAngle + initialRotationX);
-        moveY = Mathf.Clamp(moveY + Input.GetAxis("Mouse Y") * sensitivity,   initialRotationY - VerticalAngle,   initialRotationY + VerticalAngle);
+        moveX = Mathf.Clamp(moveX + Input.GetAxis("Mouse X") * sensitivity,   initialRotationY - VerticalAngle, initialRotationY + VerticalAngle);
+        moveY = Mathf.Clamp(moveY + Input.GetAxis("Mouse Y") * sensitivity,   initialRotationX - HorizontalAngle,   initialRotationX + HorizontalAngle);
 
         transform.localRotation = Quaternion.Euler(moveY,  moveX, 0);
     }
