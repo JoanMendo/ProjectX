@@ -8,8 +8,9 @@ public class TelescopeController : MonoBehaviour
 
     [Header("Zoom Settings")]
     [SerializeField] private float zoomSpeed = 5f;
-    [SerializeField] private float maxZoom = 2f;
-    [SerializeField] private float minZoom = 60f;
+    [SerializeField] private float Zoom = 2f;
+
+
 
     [Header("Rotation Settings")]
     [SerializeField] private float sensitivity = 2f;
@@ -18,63 +19,44 @@ public class TelescopeController : MonoBehaviour
     [SerializeField] private float HorizontalAngle = 60f;
 
 
-    private bool isPlayerInTrigger = false;
-    private bool isUsingTelescope = false;
 
     private float moveY = 0f;
     private float moveX = 0f;
     private float initialRotationY;
     private float initialRotationX;
+    private float initialZoom = 60f;
 
     private void Awake()
     {
         telescopeCamera.enabled = false;
         initialRotationY =   transform.localEulerAngles.y;
-        Debug.Log("Initial rotation Y: " + initialRotationY);
-        Debug.Log("Min rotation Y" + (initialRotationY - VerticalAngle) + " Max rotation Y: " + (initialRotationY + VerticalAngle));
         initialRotationX = transform.localEulerAngles.x;
-        Debug.Log("Initial rotation X: " + initialRotationX);
-        Debug.Log("Min rotation X" + (initialRotationX - HorizontalAngle) + " Max rotation X: " + (initialRotationX + HorizontalAngle));
+        initialZoom = telescopeCamera.fieldOfView;
     }
 
     private void Update()
     {
-        if (isPlayerInTrigger && Input.GetKeyDown(KeyCode.E))
-        {
-            ToggleTelescope();
-        }
 
-        if (isUsingTelescope)
+        if (telescopeCamera.isActiveAndEnabled)
         {
             HandleZoom();
             HandleRotation();
         }
     }
 
-    private void ToggleTelescope()
-    {
-        isUsingTelescope = !isUsingTelescope;
-
-        telescopeCamera.enabled = isUsingTelescope;
-        playerMainCamera.enabled = !isUsingTelescope;
-
-        Cursor.lockState = isUsingTelescope ? CursorLockMode.Locked : CursorLockMode.None;
-        Cursor.visible = !isUsingTelescope;
-    }
 
     private void HandleZoom()
     {
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
+        float scroll = Input.GetAxis("Fire2");
         if (scroll != 0)
         {
-            telescopeCamera.fieldOfView = Mathf.Clamp(
-                telescopeCamera.fieldOfView - scroll * zoomSpeed,
-                maxZoom,
-                minZoom
-            );
+            telescopeCamera.fieldOfView = initialZoom - Zoom ;
+        }
+        else
+        {
+            telescopeCamera.fieldOfView = initialZoom;
         }
     }
-
     private void HandleRotation()
     {
         moveX = Mathf.Clamp(moveX + Input.GetAxis("Mouse X") * sensitivity,   initialRotationY - VerticalAngle, initialRotationY + VerticalAngle);
@@ -83,24 +65,4 @@ public class TelescopeController : MonoBehaviour
         transform.localRotation = Quaternion.Euler(moveY,  moveX, 0);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            isPlayerInTrigger = true;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            isPlayerInTrigger = false;
-
-            if (isUsingTelescope)
-            {
-                ToggleTelescope();
-            }
-        }
-    }
 }
