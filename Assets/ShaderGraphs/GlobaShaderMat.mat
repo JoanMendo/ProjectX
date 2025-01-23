@@ -39,7 +39,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _BOOLEAN: 0
-    - _ColorStep: 125
+    - _ColorStep: 1.8
     - _DepthStep: 0.7
     - _DepthStep2: 0.04
     - _Fullscreen_AlphaBlendOperation: 0

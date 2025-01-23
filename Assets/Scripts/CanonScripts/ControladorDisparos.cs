@@ -14,8 +14,8 @@ public class ControladorDisparos : MonoBehaviour
     public LineRenderer lineRenderer; // Para proyectar la trayectoria
     public int puntosTrayectoria = 30; // Número de puntos en la línea
     public float tiempoSimulacion = 2f; // Tiempo máximo para simular la trayectoria
+    public Camera playerCamera; // Cámara del jugador
     public LayerMask capasDeColision; // Capas con las que la trayectoria puede colisionar
-
 
 
 
@@ -57,8 +57,16 @@ public class ControladorDisparos : MonoBehaviour
             return;
         }
 
-        // Configurar los parámetros iniciales
-        Vector3 posicionInicial = posicion_de_disparo.transform.position;
+        if (playerCamera.isActiveAndEnabled)
+        {
+            lineRenderer.enabled = false;
+        }
+        else
+        {
+            lineRenderer.enabled = true;
+        }
+            // Configurar los parámetros iniciales
+            Vector3 posicionInicial = posicion_de_disparo.transform.position;
         Vector3 direccion = cilindro.transform.forward.normalized;
 
         // Fuerza inicial aplicada (convertida en velocidad inicial según masa y ForceMode.Impulse)
@@ -75,9 +83,6 @@ public class ControladorDisparos : MonoBehaviour
         // Configurar LineRenderer
         lineRenderer.positionCount = puntosTrayectoria;
 
-        // Simular la trayectoria
-        Vector3 posicionActual = posicionInicial;
-        Vector3 velocidadActual = velocidadInicial;
 
         for (int i = 0; i < puntosTrayectoria; i++)
         {

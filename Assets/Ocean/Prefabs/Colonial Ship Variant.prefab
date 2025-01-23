@@ -258,6 +258,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetPosition: {x: 0, y: 0, z: -30}
-  moveSpeed: 3
+  moveSpeed: 2
   rotationSpeed: 1
   arrivalThreshold: 0.5
