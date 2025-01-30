@@ -37,7 +37,7 @@ public class DeathManager : MonoBehaviour
     {
         player.GetComponent<FirstPersonController>().enabled = false;
         player.GetComponent<Rigidbody>().freezeRotation = false;
-        player.GetComponent<Rigidbody>().AddForce(Vector3.up * deathForce, ForceMode.Impulse);
+        player.GetComponent<Rigidbody>().AddForce(transform.up * deathForce, ForceMode.Impulse);
         yield return new WaitForSeconds(5);
         player.transform.position = respawnPosition.position;
         player.GetComponent<Rigidbody>().velocity = Vector3.zero;
