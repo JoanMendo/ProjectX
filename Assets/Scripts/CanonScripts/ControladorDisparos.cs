@@ -7,6 +7,7 @@ public class ControladorDisparos : MonoBehaviour
 {
     public GameObject cilindro;
     public GameObject posicion_de_disparo;
+    public Vector3 targetPosition;
     public GameObject projectil;
     public bool limpiado = true;
     public bool cargado = true;
@@ -33,14 +34,15 @@ public class ControladorDisparos : MonoBehaviour
             return;
         }
 
-        Debug.Log("Se ha generado la bala");
+        
         GameObject bullet = Instantiate(projectil, posicion_de_disparo.transform.position, Quaternion.identity);
-        ProyectilConFuerza disparando = bullet.GetComponent<ProyectilConFuerza>();
-
+        
+        ParabolicThrow disparando = bullet.GetComponent<ParabolicThrow>();
+        Debug.Log("Se ha generado la bala");
         if (disparando != null)
         {
             sonido.Play();
-            disparando.Disparar(posicion_de_disparo);
+            disparando.ApplyForceToReachTarget(targetPosition);
             // Llama a la función que necesitas
         }
         else

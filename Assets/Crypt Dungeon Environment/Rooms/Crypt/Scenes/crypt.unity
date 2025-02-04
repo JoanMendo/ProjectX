@@ -2043,6 +2043,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cilindro: {fileID: 392499788}
   posicion_de_disparo: {fileID: 673486074}
+  targetPosition: {x: -43.3, y: -0.5, z: -265}
   projectil: {fileID: 1920044721433900, guid: 1241bd8a619ccf54fbeb76b4f85f6255, type: 3}
   limpiado: 1
   cargado: 1
