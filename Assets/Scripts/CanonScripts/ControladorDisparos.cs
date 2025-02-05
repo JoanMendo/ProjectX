@@ -9,6 +9,7 @@ public class ControladorDisparos : MonoBehaviour
     public GameObject posicion_de_disparo;
     public Vector3 targetPosition;
     public GameObject projectil;
+    public float fuerzaProyectil = 20f;
     public bool limpiado = true;
     public bool cargado = true;
     public AudioSource sonido;
@@ -17,8 +18,6 @@ public class ControladorDisparos : MonoBehaviour
     public float tiempoSimulacion = 2f; // Tiempo máximo para simular la trayectoria
     public Camera playerCamera; // Cámara del jugador
     public LayerMask capasDeColision; // Capas con las que la trayectoria puede colisionar
-
-
 
     public void prepararDisparo()
     {
@@ -36,19 +35,14 @@ public class ControladorDisparos : MonoBehaviour
 
         
         GameObject bullet = Instantiate(projectil, posicion_de_disparo.transform.position, Quaternion.identity);
-        
-        ParabolicThrow disparando = bullet.GetComponent<ParabolicThrow>();
+        bullet.GetComponent<Rigidbody>().AddForce(cilindro.transform.forward.normalized * fuerzaProyectil, ForceMode.Impulse);
+
         Debug.Log("Se ha generado la bala");
-        if (disparando != null)
-        {
-            sonido.Play();
-            disparando.ApplyForceToReachTarget(targetPosition);
+        sonido.Play();
+            
             // Llama a la función que necesitas
-        }
-        else
-        {
-            Debug.LogWarning("El script ProyectilConFuerza no se encuentra en el objeto instanciado.");
-        }
+        
+        
     }
 
     private void MostrarTrayectoria()
@@ -68,19 +62,11 @@ public class ControladorDisparos : MonoBehaviour
             lineRenderer.enabled = true;
         }
             // Configurar los parámetros iniciales
-            Vector3 posicionInicial = posicion_de_disparo.transform.position;
+        Vector3 posicionInicial = posicion_de_disparo.transform.position;
         Vector3 direccion = cilindro.transform.forward.normalized;
+       
+        Vector3 velocidadProyectil = fuerzaProyectil * direccion;
 
-        // Fuerza inicial aplicada (convertida en velocidad inicial según masa y ForceMode.Impulse)
-        Rigidbody rb = projectil.GetComponent<Rigidbody>();
-        if (rb == null)
-        {
-            Debug.LogError("El proyectil necesita un Rigidbody.");
-            return;
-        }
-
-        float masa = rb.mass; // Masa del proyectil
-        Vector3 velocidadInicial = (direccion * 50f + Vector3.up * 5f) / masa;
 
         // Configurar LineRenderer
         lineRenderer.positionCount = puntosTrayectoria;
@@ -92,7 +78,7 @@ public class ControladorDisparos : MonoBehaviour
             float tiempo = i * (tiempoSimulacion / puntosTrayectoria);
 
             // Calcular posición usando física
-            Vector3 desplazamiento = velocidadInicial * tiempo + 0.5f * Physics.gravity * tiempo * tiempo;
+            Vector3 desplazamiento = velocidadProyectil * tiempo + 0.5f * Physics.gravity * tiempo * tiempo;
             Vector3 nuevaPosicion = posicionInicial + desplazamiento;
 
             lineRenderer.SetPosition(i, nuevaPosicion);
@@ -114,24 +100,14 @@ public class ControladorDisparos : MonoBehaviour
     }
 
 
-
-
-    private void Update()
+    public void Update()
     {
-
         MostrarTrayectoria();
-
-
 
         if (Input.GetKeyDown(KeyCode.F))
         {
             Debug.Log("enteoria se esta disparando");
             prepararDisparo();
-
         }
-
-
-
-
     }
 }

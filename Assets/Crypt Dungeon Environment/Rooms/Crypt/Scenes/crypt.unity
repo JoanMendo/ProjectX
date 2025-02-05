@@ -2045,12 +2045,13 @@ MonoBehaviour:
   posicion_de_disparo: {fileID: 673486074}
   targetPosition: {x: -43.3, y: -0.5, z: -265}
   projectil: {fileID: 1920044721433900, guid: 1241bd8a619ccf54fbeb76b4f85f6255, type: 3}
+  fuerzaProyectil: 45
   limpiado: 1
   cargado: 1
   sonido: {fileID: 392499790}
   lineRenderer: {fileID: 392499803}
-  puntosTrayectoria: 30
-  tiempoSimulacion: 2
+  puntosTrayectoria: 66
+  tiempoSimulacion: 4
   playerCamera: {fileID: 1964468102}
   capasDeColision:
     serializedVersion: 2
@@ -2099,7 +2100,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c7bcb6afbd4bf1343982ccaebfc56fd6, type: 2}
+  - {fileID: 2100000, guid: 236493dab7f56fd4e9ebfcd0908d7f15, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2125,7 +2126,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.5
+    widthMultiplier: 1
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -2138,13 +2139,22 @@ LineRenderer:
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.9636871
+        value: 1.0062894
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 1, b: 1, a: 1}
-      key1: {r: 1, g: 1, b: 1, a: 1}
+      key0: {r: 0, g: 0, b: 0, a: 0.5882353}
+      key1: {r: 1, g: 0, b: 0, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -2168,12 +2178,12 @@ LineRenderer:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_ColorSpace: -1
+      m_ColorSpace: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 0
     numCapVertices: 0
-    alignment: 1
+    alignment: 0
     textureMode: 0
     textureScale: {x: 1, y: 1}
     shadowBias: 0.5

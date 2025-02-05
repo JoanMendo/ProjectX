@@ -4,38 +4,47 @@ using UnityEngine;
 
 public class ParabolicThrow : MonoBehaviour
 {
-    public float mass = 1f;   // Masa del objeto
-    public float timeToApplyForce = 0.1f; // Tiempo en el que se aplica la fuerza
-    private Rigidbody rb;
+    public float mass = 1f;          // Masa del objeto
+    public float timeToReachTarget = 2f; // Tiempo deseado para alcanzar el objetivo
+    private Rigidbody _rb;
 
-    public void Start()
+    void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        _rb = GetComponent<Rigidbody>();
     }
 
     public void ApplyForceToReachTarget(Vector3 target)
     {
+        if (timeToReachTarget <= 0)
+        {
+            Debug.LogError("El tiempo para alcanzar el objetivo debe ser mayor que cero.");
+            return;
+        }
+
         Vector3 startPos = transform.position;
         Vector3 targetPos = target;
         float g = -Physics.gravity.y;  // Magnitud de la gravedad
 
-        // Calcular el tiempo de vuelo basado en la componente Y
-        float yDisplacement = targetPos.y - startPos.y;
-        float t = Mathf.Sqrt(2 * Mathf.Abs(yDisplacement) / g);
+        // Calcular componentes de la velocidad inicial
+        Vector3 horizontalVelocity = (targetPos - startPos) / timeToReachTarget;
+        horizontalVelocity.y = 0; // Mantener solo componentes X y Z
 
-        // Calcular la velocidad inicial
-        Vector3 velocity = new Vector3(
-            (targetPos.x - startPos.x) / t,
-            (yDisplacement / t) + 0.5f * g * t,
-            (targetPos.z - startPos.z) / t
+        // Componente vertical de la velocidad (fórmula cinemática)
+        float verticalVelocity = (targetPos.y - startPos.y) / timeToReachTarget + 0.5f * g * timeToReachTarget;
+
+        Vector3 initialVelocity = new Vector3(
+            horizontalVelocity.x,
+            verticalVelocity,
+            horizontalVelocity.z
         );
 
-        // Calcular la fuerza inicial
-        Vector3 initialForce = (mass * velocity) / timeToApplyForce;
+        // Aplicar impulso correctamente (masa * velocidad)
+        Vector3 impulse = initialVelocity * mass;
 
-        // Aplicar la fuerza al Rigidbody
-        rb.AddForce(initialForce, ForceMode.Impulse);
-
-        Debug.Log("Fuerza aplicada: " + initialForce);
+        if (_rb != null)
+        {
+            _rb.AddForce(impulse, ForceMode.Impulse);
+            Debug.Log($"Impulso aplicado: {impulse}");
+        }
     }
 }
