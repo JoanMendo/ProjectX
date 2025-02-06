@@ -1593,7 +1593,7 @@ PrefabInstance:
     - target: {fileID: 1782922250572177406, guid: dd1cd5c72e27e3c48a49270727c3461b,
         type: 3}
       propertyPath: maxmimumSpeed
-      value: 10
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3823188074856641673, guid: dd1cd5c72e27e3c48a49270727c3461b,
         type: 3}
@@ -7072,7 +7072,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c04417405d9be3e4e92c6c23197a1133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickupDistance: 3
+  pickupDistance: 2.5
   moveSpeed: 10
   playerCamera: {fileID: 1964468102}
 --- !u!114 &1950146905

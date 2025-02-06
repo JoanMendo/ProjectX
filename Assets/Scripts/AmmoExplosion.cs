@@ -9,18 +9,14 @@ public class AmmoExplosion : MonoBehaviour
     public ParticleSystem explosionEffect;
     private Rigidbody Rigidbody;
     private float lastVelocity;
-    void Start()
+    void Awake()
     {
         Rigidbody = GetComponent<Rigidbody>();
     }
-    private void Update()
-    {
-
-    }
-
     private void FixedUpdate()
     {
         lastVelocity = Rigidbody.velocity.magnitude;
+        Debug.Log(Rigidbody.velocity.magnitude);
     }
 
     // Update is called once per frame

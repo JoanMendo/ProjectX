@@ -22,9 +22,7 @@ public class HoldAndMoveObjects : MonoBehaviour
         {
             ReleaseObject();
         }
-       
-        
-        
+  
     }
 
     private void FixedUpdate()
@@ -56,6 +54,7 @@ public class HoldAndMoveObjects : MonoBehaviour
         if (grabbedObject)
         {
             grabbedObject.useGravity = true; // Activar gravedad
+            grabbedObject.AddForce(transform.up * 3, ForceMode.Impulse);
             grabbedObject = null;
         }
     }
@@ -70,7 +69,15 @@ public class HoldAndMoveObjects : MonoBehaviour
         }
         Vector3 targetPosition = playerCamera.transform.position + playerCamera.transform.forward * pickupDistance;
 
+        if (Vector3.Distance(targetPosition, grabbedObject.position) > 1.7f)
+        {
+            ReleaseObject();
+            return;
+        }
+
         Vector3 direction = targetPosition - grabbedObject.position;
+
+
 
         // Aplica fuerza para mover el objeto hacia el punto de agarre
         grabbedObject.velocity = direction * 10f;
