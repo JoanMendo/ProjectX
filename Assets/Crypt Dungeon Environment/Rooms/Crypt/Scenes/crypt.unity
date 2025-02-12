@@ -1663,6 +1663,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1051942958306038, guid: 68a39471bcf807f45aace3b120f318f0, type: 3}
+      propertyPath: m_Name
+      value: rotacion
+      objectReference: {fileID: 0}
     - target: {fileID: 1638347602806178, guid: 68a39471bcf807f45aace3b120f318f0, type: 3}
       propertyPath: m_Name
       value: Small_Cannon
@@ -1681,23 +1685,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4214672131642104, guid: 68a39471bcf807f45aace3b120f318f0, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9929862
+      value: 0.7849938
       objectReference: {fileID: 0}
     - target: {fileID: 4214672131642104, guid: 68a39471bcf807f45aace3b120f318f0, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.11823068
+      value: -0.6189503
       objectReference: {fileID: 0}
     - target: {fileID: 4214672131642104, guid: 68a39471bcf807f45aace3b120f318f0, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.020555766
       objectReference: {fileID: 0}
     - target: {fileID: 4214672131642104, guid: 68a39471bcf807f45aace3b120f318f0, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: 0.01620777
       objectReference: {fileID: 0}
     - target: {fileID: 4214672131642104, guid: 68a39471bcf807f45aace3b120f318f0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -13.58
+      value: -76.51
+      objectReference: {fileID: 0}
+    - target: {fileID: 4214672131642104, guid: 68a39471bcf807f45aace3b120f318f0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4232220208875856, guid: 68a39471bcf807f45aace3b120f318f0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7402,7 +7410,7 @@ GameObject:
   - component: {fileID: 2023194179}
   - component: {fileID: 2023194183}
   m_Layer: 0
-  m_Name: Cube (1)
+  m_Name: Objetivo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7488,7 +7496,7 @@ Transform:
   m_GameObject: {fileID: 2023194178}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.9, y: 7.3, z: -99.6}
+  m_LocalPosition: {x: -4, y: 7.6, z: -99.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

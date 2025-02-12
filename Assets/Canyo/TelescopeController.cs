@@ -94,7 +94,7 @@ public class TelescopeController : MonoBehaviour
         // Aplicar la rotación manteniendo la X inicial (90°)
         transform.localRotation = Quaternion.Euler(initialRotationX, initialRotationY + moveX, 0);
 
-        Debug.Log($"Rotación después de HandleRotation - X: {transform.localEulerAngles.x}, Y: {transform.localEulerAngles.y}, Z: {transform.localEulerAngles.z}");
+       
     }
 
     public void CalculateAndDisplayCannonAngles()

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ParabolicThrow : MonoBehaviour
@@ -7,27 +8,37 @@ public class ParabolicThrow : MonoBehaviour
     public float mass = 1f;          // Masa del objeto
     public float timeToReachTarget = 2f; // Tiempo deseado para alcanzar el objetivo
     private Rigidbody _rb;
-    public GameObject objective;
-    public Vector3 posicion_enemiga;
+    private GameObject objective;
+    private GameObject canyon;
+
+
+
+    private Vector3 posicion_enemiga;
+    private Vector3 posicion_orientacion; 
 
     void Awake()
     {
         _rb = GetComponent<Rigidbody>();
+         objective = GameObject.Find("Objetivo");
+        canyon = GameObject.Find("rotacion");
+     
     }
-    void start()
+    void Start()
     {
+        
         posicion_enemiga = objective.transform.position;
-        ApplyForceToReachTarget(posicion_enemiga);
+        posicion_orientacion=canyon.transform.position;
+        ApplyForceToReachTarget(posicion_enemiga,posicion_orientacion);
     }
 
-    public void ApplyForceToReachTarget(Vector3 target)
+    public void ApplyForceToReachTarget(Vector3 target,Vector3 canyon)
     {
         if (timeToReachTarget <= 0)
         {
             Debug.LogError("El tiempo para alcanzar el objetivo debe ser mayor que cero.");
             return;
         }
-
+        Debug.Log("esta aplicando la fuerza");
         Vector3 startPos = transform.position;
         Vector3 targetPos = target;
         float g = -Physics.gravity.y;  // Magnitud de la gravedad
@@ -47,10 +58,14 @@ public class ParabolicThrow : MonoBehaviour
 
         // Aplicar impulso correctamente (masa * velocidad)
         Vector3 impulse = initialVelocity * mass;
+        float magnitude = impulse.magnitude;
+       
+
 
         if (_rb != null)
         {
-            _rb.AddForce(impulse, ForceMode.Impulse);
+            Vector3 forceDirection = canyon.normalized * magnitude;
+            _rb.AddForce(forceDirection, ForceMode.Impulse);
             Debug.Log($"Impulso aplicado: {impulse}");
         }
     }
