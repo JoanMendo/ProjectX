@@ -35,7 +35,7 @@ public class ControladorDisparos : MonoBehaviour
 
         
         GameObject bullet = Instantiate(projectil, posicion_de_disparo.transform.position, Quaternion.identity);
-        bullet.GetComponent<Rigidbody>().AddForce(cilindro.transform.forward.normalized * fuerzaProyectil, ForceMode.Impulse);
+        
 
         Debug.Log("Se ha generado la bala");
         sonido.Play();

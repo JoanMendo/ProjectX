@@ -7,10 +7,17 @@ public class ParabolicThrow : MonoBehaviour
     public float mass = 1f;          // Masa del objeto
     public float timeToReachTarget = 2f; // Tiempo deseado para alcanzar el objetivo
     private Rigidbody _rb;
+    public GameObject objective;
+    public Vector3 posicion_enemiga;
 
     void Awake()
     {
         _rb = GetComponent<Rigidbody>();
+    }
+    void start()
+    {
+        posicion_enemiga = objective.transform.position;
+        ApplyForceToReachTarget(posicion_enemiga);
     }
 
     public void ApplyForceToReachTarget(Vector3 target)

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23032861095084852}
   - component: {fileID: 95908353705732322}
   - component: {fileID: 1109514383908614582}
+  - component: {fileID: 6400341519479179490}
   m_Layer: 0
   m_Name: Round_shot
   m_TagString: Untagged
@@ -133,3 +134,17 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &6400341519479179490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1920044721433900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65c6bf2344bf5f440b48902dba6a51e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 1
+  timeToReachTarget: 2
