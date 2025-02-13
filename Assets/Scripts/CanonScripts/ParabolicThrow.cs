@@ -27,7 +27,7 @@ public class ParabolicThrow : MonoBehaviour
     {
         
         posicion_enemiga = objective.transform.position;
-        posicion_orientacion=canyon.transform.position;
+        posicion_orientacion = canyon.transform.forward;
         ApplyForceToReachTarget(posicion_enemiga,posicion_orientacion);
     }
 
@@ -64,8 +64,11 @@ public class ParabolicThrow : MonoBehaviour
 
         if (_rb != null)
         {
-            Vector3 forceDirection = canyon.normalized * magnitude;
-            _rb.AddForce(forceDirection, ForceMode.Impulse);
+            Vector3 forceDirection = transform.rotation * canyon.normalized;
+
+            // Aplicar la fuerza con la magnitud calculada
+            _rb.AddForce(forceDirection * magnitude, ForceMode.Impulse);
+
             Debug.Log($"Impulso aplicado: {impulse}");
         }
     }
