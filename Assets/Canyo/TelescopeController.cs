@@ -110,7 +110,9 @@ public class TelescopeController : MonoBehaviour
 
             // 1. Calcular el ángulo horizontal (Y)
             Vector3 horizontalDiff = new Vector3(targetPos.x - cannonPos.x, 0, targetPos.z - cannonPos.z);
-            float angleY = Mathf.Atan2(horizontalDiff.x, horizontalDiff.z) * Mathf.Rad2Deg;
+            Quaternion lookRotation = Quaternion.LookRotation(horizontalDiff);
+            float angleY = lookRotation.eulerAngles.y;
+            
 
             // 2. Calcular la distancia horizontal y la diferencia de altura (Y)
             float horizontalDistance = horizontalDiff.magnitude;
@@ -118,9 +120,10 @@ public class TelescopeController : MonoBehaviour
 
             // 3. Calcular la velocidad inicial (v0) a partir de la fuerza aplicada
             float v0 = ApplyForceToReachTarget(targetPos)/1 ;
-
+            Debug.Log(v0);
             // 4. Calcular el ángulo de elevación (X) usando la ecuación balística
             float g = -Physics.gravity.y; // Magnitud de la gravedad
+            Debug.Log(g);
             float v0Squared = v0 * v0;
 
             // Se debe asegurar que el discriminante sea no negativo
