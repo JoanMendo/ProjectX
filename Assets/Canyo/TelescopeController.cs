@@ -32,13 +32,15 @@ public class TelescopeController : MonoBehaviour
     private float moveX = 0f;
     private float initialRotationY;
     private float initialRotationX;
-    
+  
+
 
     private void Start()
     {
         telescopeCamera.enabled = false;
         initialRotationY = transform.localEulerAngles.y;
         initialRotationX = transform.localEulerAngles.x;
+       
 
 
         Debug.Log($"Rotación inicial - X: {initialRotationX}, Y: {initialRotationY}, Z: {transform.localEulerAngles.z}");
@@ -85,16 +87,15 @@ public class TelescopeController : MonoBehaviour
 
     private void HandleRotation()
     {
+        // Control del movimiento con el ratón
         moveX += Input.GetAxis("Mouse X") * sensitivity;
         moveX = Mathf.Clamp(moveX, minHorizontalAngle, maxHorizontalAngle);
 
         moveY -= Input.GetAxis("Mouse Y") * sensitivity;
         moveY = Mathf.Clamp(moveY, minVerticalAngle, maxVerticalAngle);
 
-        // Aplicar la rotación manteniendo la X inicial (90°)
-        transform.localRotation = Quaternion.Euler(initialRotationX, initialRotationY + moveX, 0);
-
-       
+        // Aplicar la rotación en el cilindro
+        transform.localRotation = Quaternion.Euler(-90 + moveY, moveX, 180);
     }
 
     public void CalculateAndDisplayCannonAngles()
@@ -127,16 +128,22 @@ public class TelescopeController : MonoBehaviour
             float v0Squared = v0 * v0;
 
             // Se debe asegurar que el discriminante sea no negativo
-            float discriminant = v0Squared * v0Squared - g * (g * horizontalDistance * horizontalDistance + 2 * heightDifference * v0Squared);
+            float discriminant = (v0Squared * v0Squared) - (g * (g * horizontalDistance * horizontalDistance + 2 * heightDifference * v0Squared));
             if (discriminant < 0)
             {
-                Debug.Log("El objetivo es inalcanzable con la fuerza aplicada");
+                Debug.Log("El objetivo es inalcanzable con la fuerza aplicada.");
                 return;
             }
 
             float sqrtDiscriminant = Mathf.Sqrt(discriminant);
-            float angleXRad = Mathf.Atan((v0Squared - sqrtDiscriminant) / (g * horizontalDistance));
-            float angleX = angleXRad * Mathf.Rad2Deg;
+
+            // Se obtienen dos posibles ángulos
+            float angleXRad1 = Mathf.Atan((v0Squared + sqrtDiscriminant) / (g * horizontalDistance));
+            float angleXRad2 = Mathf.Atan((v0Squared - sqrtDiscriminant) / (g * horizontalDistance));
+
+            // Elegimos el ángulo menor
+            float angleX = Mathf.Min(angleXRad1, angleXRad2) * Mathf.Rad2Deg;
+            Debug.Log($"Ángulo de elevación corregido (X): {angleX}°");
 
             Debug.Log($"Ángulo horizontal (Y): {angleY}°");
             Debug.Log($"Ángulo de elevación (X): {angleX}°");
