@@ -1,45 +1,46 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-
-// Clase para manejar las respuestas de Login
 [System.Serializable]
 public class LoginResponse
 {
     public string accessToken;
     public string refreshToken;
+    public string error;
 }
 
-// Clase para manejar la respuesta de la renovación del token
 [System.Serializable]
 public class RefreshResponse
 {
     public string accessToken;
+    public string error;
 }
 
+[System.Serializable]
+public class ApiResponse
+{
+    public string message;
+    public string error;
+    public int id;
+}
 
 public class ApiManager : MonoBehaviour
 {
-    private string baseUrl = "aws-0-eu-west-3.pooler.supabase.com"; // Cambia esto si tu API está en otro servidor
+    private string baseUrl = "https://projectoxdatabase.onrender.com";
+    private float refreshInterval = 45 * 60; // 45 minutos para mayor seguridad
+    private bool isAutoRefreshActive = false;
 
-    // Variables para almacenar el token de acceso y el token de actualización
-    private string accessToken = "";
-    private string refreshToken = "";
-
-    // Tiempo en segundos antes de refrescar el token (55 minutos = 3300 segundos)
-    private float refreshInterval = 55 * 60;
-
-    // --------------------------------------------------------------------------------
-    // LOGIN: Se llama al endpoint /login para obtener los tokens.
-    // --------------------------------------------------------------------------------
-    public IEnumerator Login(string email, string password)
+    // -------------------------------
+    // LOGIN
+    // -------------------------------
+    public IEnumerator Login(string email, string password, System.Action<bool, string> onComplete)
     {
-        string url = baseUrl + "/login";
-
-        // Crear el JSON con email y contraseña
-        string jsonData = "{\"email\": \"" + email + "\", \"password\": \"" + password + "\"}";
+        string url = $"{baseUrl}/login";
+        var loginData = new { email, password };
+        Debug.Log("Datos JSON a enviar: " + loginData);
+        string jsonData = JsonUtility.ToJson(loginData);
+        Debug.Log("Datos JSON a enviar: " + jsonData);
 
         using (UnityWebRequest request = new UnityWebRequest(url, "POST"))
         {
@@ -47,187 +48,283 @@ public class ApiManager : MonoBehaviour
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
+            request.timeout = 10;
 
             yield return request.SendWebRequest();
 
-            if (request.result == UnityWebRequest.Result.Success)
+            Debug.Log("Respuesta del servidor: " + request.downloadHandler.text);
+
+            if (request.result != UnityWebRequest.Result.Success)
             {
-                // Parsear la respuesta para obtener los tokens
+                HandleRequestError(request, "Login", onComplete);
+                yield break;
+            }
+
+            try
+            {
                 LoginResponse response = JsonUtility.FromJson<LoginResponse>(request.downloadHandler.text);
-                accessToken = response.accessToken;
-                refreshToken = response.refreshToken;
-                Debug.Log("Login exitoso. AccessToken: " + accessToken);
 
-                // Inicia el proceso de renovación automática del token.
+                if (!string.IsNullOrEmpty(response.error))
+                {
+                    onComplete?.Invoke(false, response.error);
+                    yield break;
+                }
+
+                SecureStorage.SaveAccessToken(response.accessToken);
+                SecureStorage.SaveRefreshToken(response.refreshToken);
+
+                isAutoRefreshActive = true;
                 StartCoroutine(AutoRefreshToken());
+
+                Debug.Log("Login exitoso");
+                onComplete?.Invoke(true, "Login exitoso");
             }
-            else
+            catch (System.Exception e)
             {
-                Debug.LogError("Error en Login: " + request.error);
+                Debug.LogError($"Error crítico en Login: {e.Message}");
+                onComplete?.Invoke(false, "Error en el procesamiento de la respuesta");
             }
         }
     }
 
-    // --------------------------------------------------------------------------------
-    // REFRESH TOKEN: Se llama al endpoint /refresh-token para obtener un nuevo accessToken.
-    // --------------------------------------------------------------------------------
-    public IEnumerator RefreshAccessToken()
+    // -------------------------------
+    // TOKEN MANAGEMENT
+    // -------------------------------
+    private IEnumerator AutoRefreshToken()
     {
-        string url = baseUrl + "/refresh-token";
-        // Se envía el refreshToken en un JSON
-        string jsonData = "{\"refreshToken\": \"" + refreshToken + "\"}";
-
-        using (UnityWebRequest request = new UnityWebRequest(url, "POST"))
+        while (isAutoRefreshActive)
         {
-            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
-            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
-
-            yield return request.SendWebRequest();
-
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                // Parseamos la respuesta para obtener el nuevo accessToken
-                RefreshResponse response = JsonUtility.FromJson<RefreshResponse>(request.downloadHandler.text);
-                accessToken = response.accessToken;
-                Debug.Log("Token refrescado: " + accessToken);
-            }
-            else
-            {
-                Debug.LogError("Error al refrescar token: " + request.error);
-            }
-        }
-    }
-
-    // --------------------------------------------------------------------------------
-    // COROUTINE: Renovación Automática del Token
-    // --------------------------------------------------------------------------------
-    public IEnumerator AutoRefreshToken()
-    {
-        while (true)
-        {
-            // Espera el intervalo establecido (por ejemplo, 55 minutos)
             yield return new WaitForSeconds(refreshInterval);
 
-            // Llama al endpoint para refrescar el token
-            yield return StartCoroutine(RefreshAccessToken());
-            Debug.Log("Access token automáticamente renovado.");
+            string currentRefreshToken = SecureStorage.LoadRefreshToken();
+            if (string.IsNullOrEmpty(currentRefreshToken))
+            {
+                Debug.LogError("No hay refresh token disponible");
+                isAutoRefreshActive = false;
+                yield break;
+            }
+
+            yield return RefreshAccessToken(currentRefreshToken);
         }
     }
 
-    // --------------------------------------------------------------------------------
-    // GET: Obtener la lista de usuarios. (Endpoint protegido: /users)
-    // --------------------------------------------------------------------------------
-    public IEnumerator GetUsers()
+    public IEnumerator RefreshAccessToken(string refreshToken)
     {
-        string url = baseUrl + "/users";
+        string url = $"{baseUrl}/refresh-token";
+        var refreshData = new { refreshToken };
+        string jsonData = JsonUtility.ToJson(refreshData);
+
+        using (UnityWebRequest request = new UnityWebRequest(url, "POST"))
+        {
+            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+            request.timeout = 10;
+
+            yield return request.SendWebRequest();
+
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                if (request.responseCode == 403)
+                {
+                    Logout();
+                }
+                HandleRequestError(request, "Refresh Token", null);
+                yield break;
+            }
+
+            try
+            {
+                RefreshResponse response = JsonUtility.FromJson<RefreshResponse>(request.downloadHandler.text);
+                if (!string.IsNullOrEmpty(response.error))
+                {
+                    Debug.LogError($"Error al refrescar token: {response.error}");
+                    yield break;
+                }
+
+                SecureStorage.SaveAccessToken(response.accessToken);
+                Debug.Log("Token actualizado correctamente");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Error crítico al refrescar token: {e.Message}");
+            }
+        }
+    }
+
+    // -------------------------------
+    // USER MANAGEMENT
+    // -------------------------------
+    public IEnumerator GetUsers(System.Action<UserData[], string> onComplete)
+    {
+        string url = $"{baseUrl}/users";
+        string accessToken = SecureStorage.LoadAccessToken();
+
+        if (string.IsNullOrEmpty(accessToken))
+        {
+            onComplete?.Invoke(null, "No hay token de acceso disponible");
+            yield break;
+        }
 
         using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
-            // Se añade el token en la cabecera de autorización
-            request.SetRequestHeader("Authorization", accessToken);
+            request.SetRequestHeader("Authorization", $"Bearer {accessToken}");
+            request.timeout = 15;
 
             yield return request.SendWebRequest();
 
-            if (request.result == UnityWebRequest.Result.Success)
+            if (request.result != UnityWebRequest.Result.Success)
             {
-                Debug.Log("Usuarios: " + request.downloadHandler.text);
+                HandleRequestError(request, "Get Users", null);
+                onComplete?.Invoke(null, "Error al obtener usuarios");
+                yield break;
             }
-            else
+
+            try
             {
-                Debug.LogError("Error al obtener usuarios: " + request.error);
+                UserData[] users = JsonUtility.FromJson<UserData[]>(request.downloadHandler.text);
+                onComplete?.Invoke(users, null);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Error al procesar usuarios: {e.Message}");
+                onComplete?.Invoke(null, "Error al procesar la respuesta");
             }
         }
     }
 
-    // --------------------------------------------------------------------------------
-    // POST: Crear un usuario. (Endpoint: /crear-usuario)
-    // Campos: name, email, phone, nickname.
-    // --------------------------------------------------------------------------------
-    public IEnumerator CreateUser(string name, string email, string phone, string nickname)
+    public IEnumerator UpdateUser(string userId, UserData userData, System.Action<bool, string> onComplete)
     {
-        string url = baseUrl + "/crear-usuario";
-        // Construcción del JSON con los datos del usuario.
-        string jsonData = "{\"nombre\": \"" + name + "\", " +
-                          "\"email\": \"" + email + "\", " +
-                          "\"phone\": \"" + phone + "\", " +
-                          "\"nickname\": \"" + nickname + "\"}";
+        string url = $"{baseUrl}/actualizar-usuario/{userId}";
+        string accessToken = SecureStorage.LoadAccessToken();
 
-        using (UnityWebRequest request = new UnityWebRequest(url, "POST"))
+        if (string.IsNullOrEmpty(accessToken))
         {
-            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
-            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
-            // Endpoint protegido: se requiere el token de acceso.
-            request.SetRequestHeader("Authorization", accessToken);
-
-            yield return request.SendWebRequest();
-
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                Debug.Log("Usuario creado exitosamente: " + request.downloadHandler.text);
-            }
-            else
-            {
-                Debug.LogError("Error al crear usuario: " + request.error);
-            }
+            onComplete?.Invoke(false, "No hay token de acceso disponible");
+            yield break;
         }
-    }
-
-    // --------------------------------------------------------------------------------
-    // PUT: Actualizar un usuario. (Endpoint: /actualizar-usuario/:id)
-    // --------------------------------------------------------------------------------
-    public IEnumerator UpdateUser(int id, string name, string email, string phone, string nickname)
-    {
-        string url = baseUrl + "/actualizar-usuario/" + id;
-        string jsonData = "{\"nombre\": \"" + name + "\", " +
-                          "\"email\": \"" + email + "\", " +
-                          "\"phone\": \"" + phone + "\", " +
-                          "\"nickname\": \"" + nickname + "\"}";
 
         using (UnityWebRequest request = new UnityWebRequest(url, "PUT"))
         {
+            string jsonData = JsonUtility.ToJson(userData);
             byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
+
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
-            request.SetRequestHeader("Authorization", accessToken);
+            request.SetRequestHeader("Authorization", $"Bearer {accessToken}");
+            request.timeout = 15;
 
             yield return request.SendWebRequest();
 
-            if (request.result == UnityWebRequest.Result.Success)
+            if (request.result != UnityWebRequest.Result.Success)
             {
-                Debug.Log("Usuario actualizado exitosamente: " + request.downloadHandler.text);
+                HandleRequestError(request, "Update User", onComplete);
+                yield break;
             }
-            else
+
+            try
             {
-                Debug.LogError("Error al actualizar usuario: " + request.error);
+                ApiResponse response = JsonUtility.FromJson<ApiResponse>(request.downloadHandler.text);
+                if (!string.IsNullOrEmpty(response.error))
+                {
+                    onComplete?.Invoke(false, response.error);
+                    yield break;
+                }
+
+                SecureStorage.SaveUserData(userData);
+                onComplete?.Invoke(true, "Usuario actualizado exitosamente");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Error al actualizar usuario: {e.Message}");
+                onComplete?.Invoke(false, "Error al procesar la respuesta");
             }
         }
     }
 
-    // --------------------------------------------------------------------------------
-    // DELETE: Eliminar un usuario. (Endpoint: /eliminar-usuario/:id)
-    // --------------------------------------------------------------------------------
-    public IEnumerator DeleteUser(int id)
+    public IEnumerator DeleteUser(string userId, System.Action<bool, string> onComplete)
     {
-        string url = baseUrl + "/eliminar-usuario/" + id;
+        string url = $"{baseUrl}/eliminar-usuario/{userId}";
+        string accessToken = SecureStorage.LoadAccessToken();
 
-        using (UnityWebRequest request = UnityWebRequest.Delete(url))
+        if (string.IsNullOrEmpty(accessToken))
         {
-            request.SetRequestHeader("Authorization", accessToken);
+            onComplete?.Invoke(false, "No hay token de acceso disponible");
+            yield break;
+        }
+
+        using (UnityWebRequest request = new UnityWebRequest(url, "DELETE"))
+        {
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Authorization", $"Bearer {accessToken}");
+            request.timeout = 15;
+
             yield return request.SendWebRequest();
 
-            if (request.result == UnityWebRequest.Result.Success)
+            if (request.result != UnityWebRequest.Result.Success)
             {
-                Debug.Log("Usuario eliminado exitosamente: " + request.downloadHandler.text);
+                HandleRequestError(request, "Delete User", onComplete);
+                yield break;
             }
-            else
+
+            try
             {
-                Debug.LogError("Error al eliminar usuario: " + request.error);
+                ApiResponse response = JsonUtility.FromJson<ApiResponse>(request.downloadHandler.text);
+                if (!string.IsNullOrEmpty(response.error))
+                {
+                    onComplete?.Invoke(false, response.error);
+                    yield break;
+                }
+
+                onComplete?.Invoke(true, "Usuario eliminado exitosamente");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Error al eliminar usuario: {e.Message}");
+                onComplete?.Invoke(false, "Error al procesar la respuesta");
             }
         }
+    }
+
+    // -------------------------------
+    // UTILITIES
+    // -------------------------------
+    private void HandleRequestError(UnityWebRequest request, string context, System.Action<bool, string> onComplete)
+    {
+        string errorMessage = $"{context} Error: {request.error}";
+
+        if (request.responseCode > 0)
+        {
+            errorMessage += $"\nCódigo de estado: {request.responseCode}";
+
+            try
+            {
+                var errorResponse = JsonUtility.FromJson<ApiResponse>(request.downloadHandler.text);
+                if (!string.IsNullOrEmpty(errorResponse.error))
+                {
+                    errorMessage = errorResponse.error;
+                }
+            }
+            catch { }
+        }
+
+        Debug.LogError(errorMessage);
+        onComplete?.Invoke(false, errorMessage);
+
+        if (request.responseCode == 401)
+        {
+            Debug.LogError("Sesión expirada, requiere nuevo login");
+            Logout();
+        }
+    }
+
+    public void Logout()
+    {
+        SecureStorage.ClearAllData();
+        isAutoRefreshActive = false;
+        StopAllCoroutines();
+        Debug.Log("Sesión cerrada correctamente");
     }
 }
