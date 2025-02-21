@@ -120,7 +120,7 @@ public class TelescopeController : MonoBehaviour
             float heightDifference = targetPos.y - cannonPos.y;
 
             // 3. Calcular la velocidad inicial (v0) a partir de la fuerza aplicada
-            float v0 = ApplyForceToReachTarget(targetPos)/1 ;
+            float v0 = 46f ;
             Debug.Log(v0);
             // 4. Calcular el ángulo de elevación (X) usando la ecuación balística
             float g = -Physics.gravity.y; // Magnitud de la gravedad

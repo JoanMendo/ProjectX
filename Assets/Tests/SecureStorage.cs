@@ -1,7 +1,38 @@
-using System;
-using System.Security.Cryptography;
-using System.Text;
 using UnityEngine;
+using System;
+using System.Text;
+using System.Security.Cryptography;
+using Newtonsoft.Json;
+
+// ------------------------------------------------------------------------------------
+
+[System.Serializable]
+public class UserData
+{
+    public string name;
+    public string email;
+    public string phone;
+    public string nickname;
+}
+
+[System.Serializable]
+public class PlayData
+{
+    public int soldier_used;
+    public int shoot_made;
+    public int ship_sinked;
+    public float time_left;
+    public int points;
+    public bool win;
+}
+
+[System.Serializable]
+public class StaticsData
+{
+    public string date;
+    public int games_played;
+    public int games_won;
+}
 
 public static class SecureStorage
 {
@@ -68,9 +99,6 @@ public static class SecureStorage
     // Métodos para guardar y cargar tokens
     // ------------------------------------------------------------------------------------
 
-    /// <summary>
-    /// Guarda el token de acceso de manera segura.
-    /// </summary>
     public static void SaveAccessToken(string token)
     {
         string encryptedToken = Encrypt(token);
@@ -78,18 +106,12 @@ public static class SecureStorage
         PlayerPrefs.Save();
     }
 
-    /// <summary>
-    /// Carga el token de acceso de manera segura.
-    /// </summary>
     public static string LoadAccessToken()
     {
         string encryptedToken = PlayerPrefs.GetString("AccessToken", "");
         return Decrypt(encryptedToken);
     }
 
-    /// <summary>
-    /// Guarda el token de refresco de manera segura.
-    /// </summary>
     public static void SaveRefreshToken(string token)
     {
         string encryptedToken = Encrypt(token);
@@ -97,9 +119,6 @@ public static class SecureStorage
         PlayerPrefs.Save();
     }
 
-    /// <summary>
-    /// Carga el token de refresco de manera segura.
-    /// </summary>
     public static string LoadRefreshToken()
     {
         string encryptedToken = PlayerPrefs.GetString("RefreshToken", "");
@@ -107,23 +126,17 @@ public static class SecureStorage
     }
 
     // ------------------------------------------------------------------------------------
-    // Métodos para guardar y cargar datos del usuario
+    // Métodos para guardar y cargar datos
     // ------------------------------------------------------------------------------------
 
-    /// <summary>
-    /// Guarda los datos del usuario de manera segura.
-    /// </summary>
     public static void SaveUserData(UserData userData)
     {
-        string jsonData = JsonUtility.ToJson(userData);
+        string jsonData = JsonConvert.SerializeObject(userData);
         string encryptedData = Encrypt(jsonData);
         PlayerPrefs.SetString("UserData", encryptedData);
         PlayerPrefs.Save();
     }
 
-    /// <summary>
-    /// Carga los datos del usuario de manera segura.
-    /// </summary>
     public static UserData LoadUserData()
     {
         string encryptedData = PlayerPrefs.GetString("UserData", "");
@@ -134,33 +147,62 @@ public static class SecureStorage
         }
 
         string jsonData = Decrypt(encryptedData);
-        return JsonUtility.FromJson<UserData>(jsonData);
+        return JsonConvert.DeserializeObject<UserData>(jsonData);
+    }
+
+    public static void SavePlayData(PlayData playData)
+    {
+        string jsonData = JsonConvert.SerializeObject(playData);
+        string encryptedData = Encrypt(jsonData);
+        PlayerPrefs.SetString("PlayData", encryptedData);
+        PlayerPrefs.Save();
+    }
+
+    public static PlayData LoadPlayData()
+    {
+        string encryptedData = PlayerPrefs.GetString("PlayData", "");
+        if (string.IsNullOrEmpty(encryptedData))
+        {
+            Debug.Log("No se encontraron datos de la partida.");
+            return null;
+        }
+
+        string jsonData = Decrypt(encryptedData);
+        return JsonConvert.DeserializeObject<PlayData>(jsonData);
+    }
+
+    public static void SaveStaticsData(StaticsData[] staticsData)
+    {
+        string jsonData = JsonConvert.SerializeObject(staticsData);
+        string encryptedData = Encrypt(jsonData);
+        PlayerPrefs.SetString("StaticsData", encryptedData);
+        PlayerPrefs.Save();
+    }
+
+    public static StaticsData[] LoadStaticsData()
+    {
+        string encryptedData = PlayerPrefs.GetString("StaticsData", "");
+        if (string.IsNullOrEmpty(encryptedData))
+        {
+            Debug.Log("No se encontraron datos de estadísticas.");
+            return null;
+        }
+
+        string jsonData = Decrypt(encryptedData);
+        return JsonConvert.DeserializeObject<StaticsData[]>(jsonData);
     }
 
     // ------------------------------------------------------------------------------------
     // Métodos para eliminar datos
     // ------------------------------------------------------------------------------------
 
-    /// <summary>
-    /// Elimina todos los datos guardados (tokens y datos del usuario).
-    /// </summary>
     public static void ClearAllData()
     {
         PlayerPrefs.DeleteKey("AccessToken");
         PlayerPrefs.DeleteKey("RefreshToken");
         PlayerPrefs.DeleteKey("UserData");
+        PlayerPrefs.DeleteKey("PlayData");
+        PlayerPrefs.DeleteKey("StaticsData");
         PlayerPrefs.Save();
     }
-}
-
-// ------------------------------------------------------------------------------------
-// Clase para representar los datos del usuario
-// ------------------------------------------------------------------------------------
-
-[System.Serializable]
-public class UserData
-{
-    public string userId;
-    public string username;
-    public string email;
 }
