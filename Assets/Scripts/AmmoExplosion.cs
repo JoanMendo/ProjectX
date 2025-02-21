@@ -16,7 +16,7 @@ public class AmmoExplosion : MonoBehaviour
     private void FixedUpdate()
     {
         lastVelocity = Rigidbody.velocity.magnitude;
-        Debug.Log(Rigidbody.velocity.magnitude);
+        //Debug.Log(Rigidbody.velocity.magnitude);
     }
 
     // Update is called once per frame

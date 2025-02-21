@@ -122,7 +122,7 @@ public class ApiManager : MonoBehaviour
     {
         LoginResponse response;
 
-        // Manejar la deserialización sin `yield`
+
         try
         {
             response = JsonConvert.DeserializeObject<LoginResponse>(jsonResponse);
@@ -160,6 +160,10 @@ public class ApiManager : MonoBehaviour
         StartCoroutine(AutoRefreshToken());
 
         onComplete?.Invoke(true, "Login exitoso");
+    }
+    public UserData GetLocalUserData()
+    {
+        return SecureStorage.LoadUserData();
     }
 
     public IEnumerator GetUser(System.Action<UserData, string> onComplete)
@@ -204,10 +208,7 @@ public class ApiManager : MonoBehaviour
         }
     }
 
-    public UserData GetLocalUserData()
-    {
-        return SecureStorage.LoadUserData();
-    }
+   
 
     public IEnumerator UpdateUser(string name, string email, string phone, string nickname,
                                 System.Action<bool, string> onComplete)
