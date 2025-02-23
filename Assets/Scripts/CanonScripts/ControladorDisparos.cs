@@ -7,6 +7,8 @@ public class ControladorDisparos : MonoBehaviour
 {
     public GameObject cilindro;
     public GameObject posicion_de_disparo;
+    public GameObject restosDisparo;
+    public Transform restosSpawning;
     public Vector3 targetPosition;
     public GameObject projectil;
     public float fuerzaProyectil = 20f;
@@ -18,6 +20,8 @@ public class ControladorDisparos : MonoBehaviour
     public float tiempoSimulacion = 2f; // Tiempo máximo para simular la trayectoria
     public Camera playerCamera; // Cámara del jugador
     public LayerMask capasDeColision; // Capas con las que la trayectoria puede colisionar
+
+    private List<GameObject>  restos = new List<GameObject>();
 
     public void prepararDisparo()
     {
@@ -33,16 +37,33 @@ public class ControladorDisparos : MonoBehaviour
             return;
         }
 
-        
+        foreach (GameObject resto in restos)
+        {
+            if (Vector3.Distance(resto.transform.position, restosSpawning.position) < 4f)
+            {
+                limpiado = false; break;
+            }
+            else
+            {
+                limpiado = true;
+                restos.Remove(resto);
+            }
+        }
+
         GameObject bullet = Instantiate(projectil, posicion_de_disparo.transform.position, Quaternion.identity);
         
-
+        if (restosDisparo != null && restosSpawning != null)
+        {
+            for (int i = 0; i < UnityEngine.Random.Range(4,9); i++)
+            {
+                GameObject resto = Instantiate(restosDisparo, restosSpawning.position, Quaternion.identity);
+                float randomScale = UnityEngine.Random.Range(0.5f, 0.9f);
+                resto.transform.localScale = new Vector3(randomScale, randomScale, randomScale);
+                restos.Add(resto);
+            }
+        }
         Debug.Log("Se ha generado la bala");
-        sonido.Play();
-            
-            // Llama a la función que necesitas
-        
-        
+        sonido.Play();   
     }
 
     private void MostrarTrayectoria()
