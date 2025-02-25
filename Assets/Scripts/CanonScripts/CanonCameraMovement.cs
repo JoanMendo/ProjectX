@@ -5,35 +5,44 @@ using UnityEngine;
 public class CanonCameraMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
-    public float speed = 25f; // Velocidad de movimiento
-    public float maxAngleX = 20f; // Ángulo máximo en el eje X
-    public float maxAngleY = 20f; // Ángulo máximo en el eje Yç
+    public float speed = 25f;      // Velocidad de movimiento
+    public float maxAngleX = 20f;   // Ángulo máximo en el eje X (vertical)
+    public float maxAngleY = 20f;   // Ángulo máximo en el eje Y (horizontal)
 
-    private Quaternion initialRotation;
+    private Vector3 initialRotation;  // Rotación inicial en Euler
+    private Vector2 rotationOffset;   // Offset acumulado (X para vertical, Y para horizontal)
 
-    private void OnDisable()
+    void Awake()
     {
-        transform.rotation = initialRotation;
+        initialRotation = transform.eulerAngles;
+        rotationOffset = Vector2.zero;
     }
 
-
-    void Start()
+    void OnEnable()
     {
-        initialRotation = transform.rotation;
-        Debug.Log("Initial rotation: " + initialRotation);
+        transform.eulerAngles = initialRotation;
+        rotationOffset = Vector2.zero;
     }
 
     void FixedUpdate()
     {
-        // Lee la entrada del usuario
-        float inputX = Input.GetAxisRaw("Horizontal");
-        float inputY = Input.GetAxisRaw("Vertical");
+        if (Input.GetMouseButton(0))
+        {
+            // Leer la entrada del usuario
+            float inputX = Input.GetAxisRaw("Horizontal");
+            float inputY = Input.GetAxisRaw("Vertical");
 
-        float newAngleX = Mathf.Clamp(transform.rotation.x - inputY * speed, initialRotation.x - maxAngleX, initialRotation.x + maxAngleX);
+            // Actualizar el offset de rotación acumulado
+            // Nota: Se invierte el inputY para que mover hacia arriba rote hacia abajo (y viceversa),
+            // pero puedes ajustar según el comportamiento deseado.
+            rotationOffset.x = Mathf.Clamp(rotationOffset.x - inputY * speed * Time.deltaTime, -maxAngleX, maxAngleX);
+            rotationOffset.y = Mathf.Clamp(rotationOffset.y + inputX * speed * Time.deltaTime, -maxAngleY, maxAngleY);
 
-        float newAngleY = Mathf.Clamp(transform.rotation.y + inputX * speed, initialRotation.y - maxAngleY, initialRotation.y + maxAngleY);
+            // Calcular la rotación destino sumando el offset a la rotación inicial
+            Quaternion targetRotation = Quaternion.Euler(initialRotation.x + rotationOffset.x, initialRotation.y + rotationOffset.y, 0);
 
-        if (inputX != 0 || inputY != 0)
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(newAngleX, newAngleY, 0),  speed);
+            // Aplicar la rotación de forma suave con Slerp
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * speed);
+        }
     }
 }

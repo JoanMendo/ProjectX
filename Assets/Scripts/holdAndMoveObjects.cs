@@ -8,7 +8,8 @@ public class HoldAndMoveObjects : MonoBehaviour
     public float moveSpeed = 10f; // Velocidad de movimiento del objeto
 
     public Camera playerCamera;
-    private Rigidbody grabbedObject;
+    public Material highlightMaterial;
+    private GameObject grabbedObject;
     void Update()
     {
         // Detectar si se mantiene pulsado el botón derecho del mouse
@@ -43,8 +44,17 @@ public class HoldAndMoveObjects : MonoBehaviour
             Rigidbody rb = hit.collider.GetComponent<Rigidbody>();
             if (rb != null)
             {
-                grabbedObject = rb;
-                grabbedObject.useGravity = false; // Desactivar gravedad
+                Material[] material = hit.collider.GetComponent<MeshRenderer>().materials;
+                Material[] newMaterials = new Material[material.Length + 1];
+                for (int i = 0; i < material.Length; i++)
+                {
+                    newMaterials[i] = material[i]; // Copia los materiales antiguos
+                }
+                newMaterials[newMaterials.Length - 1] = highlightMaterial; // Añade el nuevo material
+
+                hit.collider.GetComponent<MeshRenderer>().materials = newMaterials;
+                grabbedObject = hit.collider.gameObject;
+                grabbedObject.GetComponent<Rigidbody>().useGravity = false; // Desactivar gravedad
             }
         }
     }
@@ -53,8 +63,15 @@ public class HoldAndMoveObjects : MonoBehaviour
     {
         if (grabbedObject)
         {
-            grabbedObject.useGravity = true; // Activar gravedad
-            grabbedObject.AddForce(transform.up * 3, ForceMode.Impulse);
+            Material[] material = grabbedObject.GetComponent<MeshRenderer>().materials;
+            Material[] newMaterials = new Material[material.Length - 1];
+            for (int i = 0; i < newMaterials.Length; i++)
+            {
+                newMaterials[i] = material[i]; // Copia los materiales antiguos
+            }
+            grabbedObject.GetComponent<MeshRenderer>().materials = newMaterials; // Elimina el material de resaltado
+            grabbedObject.GetComponent<Rigidbody>().useGravity = true; // Activar gravedad
+            grabbedObject.GetComponent<Rigidbody>().AddForce(transform.up * 3, ForceMode.Impulse);
             grabbedObject = null;
         }
     }
@@ -69,29 +86,29 @@ public class HoldAndMoveObjects : MonoBehaviour
         }
         Vector3 targetPosition = playerCamera.transform.position + playerCamera.transform.forward * pickupDistance;
 
-        if (Vector3.Distance(targetPosition, grabbedObject.position) > 1.7f)
+        if (Vector3.Distance(targetPosition, grabbedObject.GetComponent<Rigidbody>().position) > 1.7f)
         {
             ReleaseObject();
             return;
         }
 
-        Vector3 direction = targetPosition - grabbedObject.position;
+        Vector3 direction = targetPosition - grabbedObject.GetComponent<Rigidbody>().position;
 
 
 
         // Aplica fuerza para mover el objeto hacia el punto de agarre
-        grabbedObject.velocity = direction * 10f;
+        grabbedObject.GetComponent<Rigidbody>().velocity = direction * 10f;
 
         // Limita la velocidad para evitar atraviesos
-        grabbedObject.velocity = Vector3.ClampMagnitude(grabbedObject.velocity, 10f);
+        grabbedObject.GetComponent<Rigidbody>().velocity = Vector3.ClampMagnitude(grabbedObject.GetComponent<Rigidbody>().velocity, 10f);
     }
 
     void PushObject()
     {
         if (grabbedObject)
         {
-            grabbedObject.useGravity = true; // Activar gravedad
-            grabbedObject.AddForce(playerCamera.transform.forward * 40f, ForceMode.Impulse);
+            grabbedObject.GetComponent<Rigidbody>().useGravity = true; // Activar gravedad
+            grabbedObject.GetComponent<Rigidbody>().AddForce(playerCamera.transform.forward * 40f, ForceMode.Impulse);
             grabbedObject = null;
         }
     }

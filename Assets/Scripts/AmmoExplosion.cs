@@ -31,7 +31,6 @@ public class AmmoExplosion : MonoBehaviour
             }
             
             Destroy(gameObject);
-            Debug.Log("Explosion");
             DeathManager.Instance.OnDeath();
 
         }

@@ -27,13 +27,13 @@ public class ControladorDisparos : MonoBehaviour
     {
         if (projectil == null || cilindro == null)
         {
-            Debug.LogError("Referencia nula: projectil o cilindro no está asignado.");
+
             return;
         }
 
         if (!limpiado || !cargado)
         {
-            Debug.Log("El disparo no está preparado: limpiado o cargado es falso.");
+
             return;
         }
 
@@ -62,7 +62,7 @@ public class ControladorDisparos : MonoBehaviour
                 restos.Add(resto);
             }
         }
-        Debug.Log("Se ha generado la bala");
+
         sonido.Play();   
     }
 
@@ -70,7 +70,7 @@ public class ControladorDisparos : MonoBehaviour
     {
         if (cilindro == null || projectil == null || lineRenderer == null)
         {
-            Debug.LogWarning("Faltan referencias para mostrar la trayectoria.");
+
             return;
         }
 
