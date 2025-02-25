@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class DetectarImpacto : MonoBehaviour
 {
-    private void OnTriggerEnter(Collider other)
+
+    public void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Objetivo alcanzado");
+        Debug.Log("objetivo alcanzado");
+        Destroy(other.gameObject);
     }
 }
