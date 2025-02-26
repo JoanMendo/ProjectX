@@ -12,7 +12,7 @@ public class StatisticsHandler : MonoBehaviour
 
     private void Start()
     {
-        // Cargar las estadísticas al iniciar
+        apiManager = GameObject.Find("GameManager").GetComponent<ApiManager>();
         LoadStatistics();
     }
 
@@ -49,7 +49,7 @@ public class StatisticsHandler : MonoBehaviour
         if (statistics == null || statistics.Length == 0) return;
 
         // Aquí puedes agregar cualquier procesamiento adicional que necesites
-        // Por ejemplo, ordenar los datos, calcular totales, etc.
+        // Por ejemplo, ordenar los datos
         foreach (var stat in statistics)
         {
             // Procesa cada registro de estadísticas según necesites

@@ -13,7 +13,10 @@ public class UpdateUserInputHandler : MonoBehaviour
     private void Start()
     {
         // Cargar los datos actuales del usuario al iniciar
+        apiManager = GameObject.Find("GameManager").GetComponent<ApiManager>();
         LoadCurrentUserData();
+        
+
     }
 
     private void LoadCurrentUserData()

@@ -29,9 +29,14 @@ public class PlayData
 [System.Serializable]
 public class StaticsData
 {
-    public string date;
-    public int games_played;
-    public int games_won;
+    public int soldier_died;
+    public int shoots_made;
+    public int ships_detroyed;
+    public int loses;
+    public int wins;
+    public string rank;
+    public string nickname;
+    public int total_points;
 }
 
 public static class SecureStorage

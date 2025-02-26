@@ -17,7 +17,7 @@ public class CreateUserInputHandler : MonoBehaviour
         {
             string name = nameInput.text;
             string email = emailInput.text;
-            string phone = phoneInput.text;
+            string phone ="+34"+ phoneInput.text;
             string nickname = nicknameInput.text;
             string password = passwordInput.text;
 

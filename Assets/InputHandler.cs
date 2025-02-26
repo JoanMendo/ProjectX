@@ -34,7 +34,7 @@ public class InputHandler : MonoBehaviour
         yield return StartCoroutine(apiManager.Login(email, password, (success, message) => {
             if (success)
             {
-                GameManager.gameManager.LoadSceneByIndex(1);
+                GameManager.gameManager.LoadSceneByIndex(2);
             }
             else
             {

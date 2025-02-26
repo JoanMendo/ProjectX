@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/pruebasMendo.unity
     guid: 8252bc6f6f0e7fa41b788fce2ce84545
+  - enabled: 1
+    path: Assets/Scenes/update.unity
+    guid: 1d95f6367f045844f94144bd18554633
   m_configObjects: {}

@@ -6,12 +6,12 @@ public class PlayDataHandler : MonoBehaviour
     public ApiManager apiManager;
 
     // Variables para almacenar los datos de la partida
-    private int soldierUsed;
-    private int shootMade;
-    private int shipSinked;
-    private float timeLeft;
-    private int points;
-    private bool win;
+    private int soldierUsed = 12;
+    private int shootMade = 13;
+    private int shipSinked = 4;
+    private float timeLeft = 1.0f;
+    private int points = 200;
+    private bool win = true;
 
     // Método para establecer los datos de la partida
     public void SetPlayData(int soldiers, int shoots, int ships, float time, int score, bool victory)
@@ -22,6 +22,14 @@ public class PlayDataHandler : MonoBehaviour
         timeLeft = time;
         points = score;
         win = victory;
+    }
+    private void Start()
+    {
+        // Cargar los datos actuales del usuario al iniciar
+        apiManager = GameObject.Find("GameManager").GetComponent<ApiManager>();
+        SavePlayData();
+
+
     }
 
     // Método para enviar los datos de la partida
