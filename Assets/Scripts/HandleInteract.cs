@@ -14,7 +14,9 @@ public class HandleInteract : MonoBehaviour, IInteractable
 
     public void Start()
     {
-        
+        initialRotation = new Vector3(0,0,0);
+        finalRotation = new Vector3(0,100,0);
+
     }
     public void Interact()
     {
@@ -26,26 +28,23 @@ public class HandleInteract : MonoBehaviour, IInteractable
 
     public IEnumerator moveHandle()
     {
-        initialRotation = handleGameObject.transform.localEulerAngles;
-        finalRotation = initialRotation;
-        finalRotation.y += 90;
         Quaternion initialRotationQuat = Quaternion.Euler(initialRotation.x, initialRotation.y, 0);
-        Quaternion finalRotationQuat = Quaternion.Euler(finalRotation.x, -finalRotation.y, 0);
+        Quaternion finalRotationQuat = Quaternion.Euler(finalRotation.x, finalRotation.y, 0);
         
-        if (Quaternion.Angle(handleGameObject.transform.rotation, finalRotationQuat) > 2)
+        if (Quaternion.Angle(handleGameObject.transform.localRotation, finalRotationQuat) > 2)
         {
-            while (Quaternion.Angle(handleGameObject.transform.rotation, finalRotationQuat) > 2)
+            while (Quaternion.Angle(handleGameObject.transform.localRotation, finalRotationQuat) > 2)
             {
-                handleGameObject.transform.rotation = Quaternion.Slerp(handleGameObject.transform.rotation, finalRotationQuat, Time.deltaTime * openSpeed);
+                handleGameObject.transform.localRotation = Quaternion.Slerp(handleGameObject.transform.localRotation, finalRotationQuat, Time.deltaTime * openSpeed);
                 yield return null;
             }
         }
         
         else
         {
-            while (Quaternion.Angle(handleGameObject.transform.rotation, initialRotationQuat) > 2)
+            while (Quaternion.Angle(handleGameObject.transform.localRotation, initialRotationQuat) > 2)
             {
-                handleGameObject.transform.rotation = Quaternion.Slerp(handleGameObject.transform.rotation, initialRotationQuat, Time.deltaTime * openSpeed);
+                handleGameObject.transform.localRotation = Quaternion.Slerp(handleGameObject.transform.localRotation, initialRotationQuat, Time.deltaTime * openSpeed);
                 yield return null;
             }
         }
