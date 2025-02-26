@@ -12,20 +12,20 @@ public class ParabolicThrow : MonoBehaviour
 
 
 
-    private Vector3 posicion_enemiga;
+    
     private Vector3 posicion_orientacion; 
 
     void Awake()
     {
         _rb = GetComponent<Rigidbody>();
          objective = GameObject.Find("Objetivo");
-        canyon = GameObject.Find("rotacion");
+        canyon = GameObject.Find("Canon");
      
     }
     void Start()
     {
         
-        posicion_enemiga = objective.transform.position;
+        
         posicion_orientacion = canyon.transform.forward;
         ApplyForceToReachTarget(posicion_orientacion);
     }

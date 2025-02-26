@@ -390,6 +390,7 @@ MonoBehaviour:
   pickupDistance: 3
   moveSpeed: 10
   playerCamera: {fileID: 256940156}
+  highlightMaterial: {fileID: 0}
 --- !u!1 &1468005223
 GameObject:
   m_ObjectHideFlags: 0
