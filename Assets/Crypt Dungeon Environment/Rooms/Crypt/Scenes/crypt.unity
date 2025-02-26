@@ -777,6 +777,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1306683314362352812}
+  - {fileID: 5572196831765962938}
   m_Father: {fileID: 1096555009535178848}
   m_LocalEulerAnglesHint: {x: 11.065, y: 285.595, z: -3.076}
 --- !u!1001 &606940104
@@ -1628,15 +1629,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4459864850019384750, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1950146914}
-    - targetCorrespondingSourceObject: {fileID: 4459864850019384750, guid: 6bacecc4f3df9584198879c73a6b6c36,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1950146913}
-    - targetCorrespondingSourceObject: {fileID: 4459864850019384750, guid: 6bacecc4f3df9584198879c73a6b6c36,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1950146912}
+      addedObject: {fileID: 1950146921}
     - targetCorrespondingSourceObject: {fileID: 4459864851310106424, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
       insertIndex: -1
@@ -2324,64 +2317,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 1964468102}
-  distanciaRaycast: 5
+  distanciaRaycast: 2.5
   teclaInteraccion: 101
---- !u!114 &1950146912
+--- !u!114 &1950146921
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1950146897}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff452df730b5ff0478a3acc82cfebe45, type: 3}
+  m_Script: {fileID: 11500000, guid: 99e1f4f6c84dc8a4b8a9b711708b3d84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 1964468102}
-  distance: 3
-  cannonAnimator: {fileID: 0}
-  verticalAimLayer:
+  layers:
     serializedVersion: 2
-    m_Bits: 512
-  body: {fileID: 0}
---- !u!114 &1950146913
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1950146897}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c86b4985891c9d441b0e58f259259609, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerCamera: {fileID: 1964468102}
-  distance: 3
-  cannonAnimator: {fileID: 0}
-  horizontalAimLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  body: {fileID: 0}
---- !u!114 &1950146914
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1950146897}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74fbb905f28ed0647ad67bf8ba7746c1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerCamera: {fileID: 1964468102}
-  distance: 3
-  animator: {fileID: 0}
-  doorLayer:
-    serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 72
+  highlightMaterial: {fileID: 2100000, guid: 28ba4d4de73b6fe4690a0e8c9a48adcd, type: 2}
 --- !u!1 &1964468101 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4459864851310106424, guid: 6bacecc4f3df9584198879c73a6b6c36,
@@ -2807,7 +2761,6 @@ Transform:
   - {fileID: 1418408238203632088}
   - {fileID: 6320142968627453398}
   - {fileID: 7466278188548421305}
-  - {fileID: 5572196831765962938}
   - {fileID: 5626708386543111367}
   - {fileID: 2490309042469837249}
   - {fileID: 6781650764131470187}
@@ -3307,12 +3260,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2652370805617327058}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.00000003774895, y: 0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_LocalRotation: {x: -0.024602268, y: 0.99480075, z: -0.09694149, w: -0.019200958}
+  m_LocalPosition: {x: -0.4884343, y: -2.1863909, z: 0.64231056}
+  m_LocalScale: {x: 70.24777, y: 70.24781, z: 70.247765}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1096555009535178848}
+  m_Father: {fileID: 558668937}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &5623383459873954859
 MeshRenderer:
@@ -3835,7 +3788,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   openSpeed: 5
   handleGameObject: {fileID: 558668936}
-  initialRotation: {x: 11.065452, y: 177.49043, z: 356.9235}
   finalRotation: {x: 11.065454, y: 285.59515, z: 356.9235}
 --- !u!65 &8675706462504213275
 BoxCollider:
