@@ -21,12 +21,9 @@ public class HighlightObjects : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, 2.5f, layers))
         {
-            Rigidbody rb = hit.collider.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
+            
                 if (currentObject == null)
                 {
-                    currentObject = hit.collider.gameObject;
 
                     Material[] material = hit.collider.GetComponent<MeshRenderer>().materials;
                     Material[] newMaterials = new Material[material.Length + 1];
@@ -37,20 +34,44 @@ public class HighlightObjects : MonoBehaviour
                     newMaterials[newMaterials.Length - 1] = highlightMaterial; // Añade el nuevo material
 
                     hit.collider.GetComponent<MeshRenderer>().materials = newMaterials;
+                    currentObject = hit.collider.gameObject;
                 }  
-            }
-            if (currentObject != null && (hit.collider.GetComponent<Rigidbody>() == null) || hit.collider.GetComponent<Rigidbody>() != currentObject.GetComponent<Rigidbody>())
-            {
-                Material[] material = currentObject.GetComponent<MeshRenderer>().materials;
-                Material[] newMaterials = new Material[material.Length - 1];
-                for (int i = 0; i < newMaterials.Length; i++)
+                else if (currentObject != hit.collider.gameObject)
                 {
-                    newMaterials[i] = material[i]; // Copia los materiales antiguos
+                    Material[] material = currentObject.GetComponent<MeshRenderer>().materials;
+                    Material[] newMaterials = new Material[material.Length - 1];
+                    for (int i = 0; i < newMaterials.Length; i++)
+                    {
+                        newMaterials[i] = material[i]; // Copia los materiales antiguos
+                    }
+                    currentObject.GetComponent<MeshRenderer>().materials = newMaterials; // Elimina el material de resaltado
+                    currentObject = hit.collider.gameObject;
+
+                    Material[] material2 = hit.collider.GetComponent<MeshRenderer>().materials;
+                    Material[] newMaterials2 = new Material[material2.Length + 1];
+                    for (int i = 0; i < material2.Length; i++)
+                    {
+                        newMaterials2[i] = material2[i]; // Copia los materiales antiguos
+                    }
+                    newMaterials2[newMaterials2.Length - 1] = highlightMaterial; // Añade el nuevo material
+
+                    hit.collider.GetComponent<MeshRenderer>().materials = newMaterials2;
                 }
-                currentObject.GetComponent<MeshRenderer>().materials = newMaterials; // Elimina el material de resaltado
-                currentObject = null;
-            }
+            
+            
+           
         }
-        
+        else if (currentObject != null)
+        {
+            Material[] material = currentObject.GetComponent<MeshRenderer>().materials;
+            Material[] newMaterials = new Material[material.Length - 1];
+            for (int i = 0; i < newMaterials.Length; i++)
+            {
+                newMaterials[i] = material[i]; // Copia los materiales antiguos
+            }
+            currentObject.GetComponent<MeshRenderer>().materials = newMaterials; // Elimina el material de resaltado
+            currentObject = null;
+        }
+
     }
 }

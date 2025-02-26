@@ -6,6 +6,7 @@ public class TelescopeController : MonoBehaviour
     public float speed = 25f;      // Velocidad de movimiento
     public float maxAngleX = 20f;   // Ángulo máximo en el eje X (vertical)
     public float maxAngleY = 20f;   // Ángulo máximo en el eje Y (horizontal)
+    public GameObject proyectileOrigin;
 
     private Vector3 initialRotation;  // Rotación inicial en Euler
     private Vector2 rotationOffset;   // Offset acumulado (X para vertical, Y para horizontal)
@@ -41,6 +42,61 @@ public class TelescopeController : MonoBehaviour
 
             // Aplicar la rotación de forma suave con Slerp
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * speed);
+        }
+    }
+    public void CalculateAndDisplayCannonAngles()
+    {
+        // Lanza un Raycast desde la cámara del telescopio
+        Ray ray = gameObject.GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
+        int layer = LayerMask.GetMask("Barco");
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 400f, layer))
+        {
+            Vector3 targetPos = hit.point;
+            Vector3 cannonPos = proyectileOrigin.transform.position; // Posición del cañón
+
+            // 1. Calcular el ángulo horizontal (Y)
+            Vector3 horizontalDiff = new Vector3(targetPos.x - cannonPos.x, 0, targetPos.z - cannonPos.z);
+            Quaternion lookRotation = Quaternion.LookRotation(horizontalDiff);
+            float angleY = lookRotation.eulerAngles.y;
+
+
+            // 2. Calcular la distancia horizontal y la diferencia de altura (Y)
+            float horizontalDistance = horizontalDiff.magnitude;
+            float heightDifference = targetPos.y - cannonPos.y;
+
+            // 3. Calcular la velocidad inicial (v0) a partir de la fuerza aplicada
+            float v0 = 46f;
+    
+            // 4. Calcular el ángulo de elevación (X) usando la ecuación balística
+            float g = -Physics.gravity.y; // Magnitud de la gravedad
+
+            float v0Squared = v0 * v0;
+
+            // Se debe asegurar que el discriminante sea no negativo
+            float discriminant = (v0Squared * v0Squared) - (g * (g * horizontalDistance * horizontalDistance + 2 * heightDifference * v0Squared));
+            if (discriminant < 0)
+            {
+                Debug.Log("El objetivo es inalcanzable con la fuerza aplicada.");
+                return;
+            }
+
+            float sqrtDiscriminant = Mathf.Sqrt(discriminant);
+
+            // Se obtienen dos posibles ángulos
+            float angleXRad1 = Mathf.Atan((v0Squared + sqrtDiscriminant) / (g * horizontalDistance));
+            float angleXRad2 = Mathf.Atan((v0Squared - sqrtDiscriminant) / (g * horizontalDistance));
+
+            // Elegimos el ángulo menor
+            float angleX = Mathf.Min(angleXRad1, angleXRad2) * Mathf.Rad2Deg;
+            Debug.Log($"Ángulo de elevación corregido (X): {angleX}°");
+
+            Debug.Log($"Ángulo horizontal (Y): {angleY}°");
+            Debug.Log($"Ángulo de elevación (X): {angleX}°");
+        }
+        else
+        {
+            Debug.Log("No se detectó ningún objetivo en el Raycast");
         }
     }
 }
