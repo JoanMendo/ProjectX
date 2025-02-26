@@ -10,24 +10,25 @@ public class HandleInteract : MonoBehaviour, IInteractable
 
     private Coroutine coroutine;
     private Vector3 initialRotation;
-    public Vector3 finalRotation;
+    private Vector3 finalRotation;
 
     public void Start()
     {
-        initialRotation = handleGameObject.transform.eulerAngles;
+        
     }
     public void Interact()
     {
-        Debug.Log("Interact");
         if (coroutine == null)
         {
             coroutine = StartCoroutine(moveHandle());
-        }
-        
+        }  
     }
 
     public IEnumerator moveHandle()
     {
+        initialRotation = handleGameObject.transform.localEulerAngles;
+        finalRotation = initialRotation;
+        finalRotation.y += 90;
         Quaternion initialRotationQuat = Quaternion.Euler(initialRotation.x, initialRotation.y, 0);
         Quaternion finalRotationQuat = Quaternion.Euler(finalRotation.x, -finalRotation.y, 0);
         

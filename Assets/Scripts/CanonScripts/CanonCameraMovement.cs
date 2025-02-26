@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CanonCameraMovement : MonoBehaviour
@@ -8,20 +9,24 @@ public class CanonCameraMovement : MonoBehaviour
     public float speed = 25f;      // Velocidad de movimiento
     public float maxAngleX = 20f;   // Ángulo máximo en el eje X (vertical)
     public float maxAngleY = 20f;   // Ángulo máximo en el eje Y (horizontal)
+    public GameObject verticalMovementObject;
+    public GameObject horizontalMovementObject;
 
-    private Vector3 initialRotation;  // Rotación inicial en Euler
+    private Vector3 initialRotationHorizontal;  // Rotación inicial en Euler
+    private Vector3 initialRotationVertical;
     private Vector2 rotationOffset;   // Offset acumulado (X para vertical, Y para horizontal)
 
     void Awake()
     {
-        initialRotation = transform.eulerAngles;
+        initialRotationHorizontal = horizontalMovementObject.transform.localEulerAngles;
+        initialRotationVertical = verticalMovementObject.transform.localEulerAngles;
         rotationOffset = Vector2.zero;
     }
 
     void OnEnable()
     {
-        transform.eulerAngles = initialRotation;
-        rotationOffset = Vector2.zero;
+        horizontalMovementObject.transform.localEulerAngles = initialRotationHorizontal;
+        verticalMovementObject.transform.localEulerAngles = initialRotationVertical;
     }
 
     void FixedUpdate()
@@ -39,10 +44,15 @@ public class CanonCameraMovement : MonoBehaviour
             rotationOffset.y = Mathf.Clamp(rotationOffset.y + inputX * speed * Time.deltaTime, -maxAngleY, maxAngleY);
 
             // Calcular la rotación destino sumando el offset a la rotación inicial
-            Quaternion targetRotation = Quaternion.Euler(initialRotation.x + rotationOffset.x, initialRotation.y + rotationOffset.y, 0);
+            Quaternion targetRotationHorizontal  = Quaternion.Euler(initialRotationHorizontal.x - rotationOffset.x, initialRotationHorizontal.y, 0);
+            Quaternion targetRotationVertical = Quaternion.Euler(initialRotationVertical.x, initialRotationVertical.y + rotationOffset.y, 0);
+
+            horizontalMovementObject.transform.localRotation= Quaternion.Slerp(horizontalMovementObject.transform.localRotation, targetRotationHorizontal, Time.deltaTime * speed);
+            verticalMovementObject.transform.localRotation = Quaternion.Slerp(verticalMovementObject.transform.localRotation, targetRotationVertical, Time.deltaTime * speed);
 
             // Aplicar la rotación de forma suave con Slerp
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * speed);
+
+
         }
     }
 }

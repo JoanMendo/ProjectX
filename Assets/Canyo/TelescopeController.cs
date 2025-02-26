@@ -13,13 +13,13 @@ public class TelescopeController : MonoBehaviour
 
     void Awake()
     {
-        initialRotation = transform.eulerAngles;
+        initialRotation = transform.localEulerAngles;
         rotationOffset = Vector2.zero;
     }
 
     void OnEnable()
     {
-        transform.eulerAngles = initialRotation;
+        transform.localEulerAngles = initialRotation;
         rotationOffset = Vector2.zero;
     }
 
@@ -42,6 +42,7 @@ public class TelescopeController : MonoBehaviour
 
             // Aplicar la rotación de forma suave con Slerp
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * speed);
+            CalculateAndDisplayCannonAngles();
         }
     }
     public void CalculateAndDisplayCannonAngles()
