@@ -16,10 +16,10 @@ public class HandleFire : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Detecta la colision");
+       // Debug.Log("Detecta la colision");
         if (other.gameObject.CompareTag("TourchSpot"))
         {
-            Debug.Log("se deberia encender");
+         //   Debug.Log("se deberia encender");
             StartCoroutine(ActivateFire());
         }
     }
