@@ -22,7 +22,6 @@ public class AmmoExplosion : MonoBehaviour
     // Update is called once per frame
     public void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Collision");
         if (lastVelocity> maxmimumSpeed)
         {
             if (explosionEffect != null)

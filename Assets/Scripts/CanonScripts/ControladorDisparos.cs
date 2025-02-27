@@ -27,7 +27,7 @@ public class ControladorDisparos : MonoBehaviour
 
     public void prepararDisparo()
     {
-        if (projectil == null)
+        if (projectil == null || RecargarMunicion.puerta_abierta)
         {
             return;
         }

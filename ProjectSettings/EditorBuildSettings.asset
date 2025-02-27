@@ -9,9 +9,30 @@ EditorBuildSettings:
     path: Assets/Scenes/Demo.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
+    path: Assets/Gentleland/SteampunkUI/Scenes/Examples/FirstScene.unity
+    guid: b727086bcd908c84584fb253884e1d53
+  - enabled: 1
+    path: Assets/Gentleland/SteampunkUI/Scenes/Examples/Login.unity
+    guid: 7a25231b10df1914fa7673c3aacb5e64
+  - enabled: 1
+    path: Assets/Gentleland/SteampunkUI/Scenes/Examples/Register.unity
+    guid: cc60c88fabb799e419fcc1cee3f47f23
+  - enabled: 1
+    path: Assets/Gentleland/SteampunkUI/Scenes/Examples/MainMenu.unity
+    guid: 865aa74a03fabda4abb32aab4fbff749
+  - enabled: 1
+    path: Assets/Gentleland/SteampunkUI/Scenes/Examples/AccountSettings.unity
+    guid: b38af102c03d2f24c9fa6e0cae81af24
+  - enabled: 1
+    path: Assets/Gentleland/SteampunkUI/Scenes/Examples/Stats.unity
+    guid: f5010e7d725d29f41b72c6f3d7c93a12
+  - enabled: 1
+    path: Assets/Crypt Dungeon Environment/Rooms/Crypt/Scenes/crypt.unity
+    guid: 119611f5d14e1de409b7582c9332add0
+  - enabled: 0
     path: Assets/Scenes/Inicio Sesion.unity
     guid: 9bb1e9a8ea065634c80fcbe9f288d795
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/pruebasMendo.unity
     guid: 8252bc6f6f0e7fa41b788fce2ce84545
   m_configObjects: {}

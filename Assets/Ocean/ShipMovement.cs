@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ShipMovement : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class ShipMovement : MonoBehaviour
     public float moveSpeed = 2f;        // Velocidad de movimiento constante
     public float rotationSpeed = 1f;    // Velocidad de rotación
     private Rigidbody _rigidbody;        // El Rigidbody del barco
-    public float arrivalThreshold = 0.5f; // Umbral de distancia para considerar que el barco ha llegado al destino
+    public float arrivalThreshold = 10f; // Umbral de distancia para considerar que el barco ha llegado al destino
 
     void Start()
     {
@@ -35,7 +36,7 @@ public class ShipMovement : MonoBehaviour
         _rigidbody.rotation = Quaternion.Slerp(_rigidbody.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         if (Vector3.Distance(transform.position, targetPosition) <= arrivalThreshold)
         {
-            Destroy(gameObject);
+            SceneManager.LoadScene("FirstScene");
         }
     }
 }

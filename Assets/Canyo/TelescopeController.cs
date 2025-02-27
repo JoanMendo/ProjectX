@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class TelescopeController : MonoBehaviour
@@ -9,9 +10,17 @@ public class TelescopeController : MonoBehaviour
     public float maxVerticalAngle = 30f;
     public GameObject proyectileOrigin;
 
+
     [Header("Camera Settings")]
     public Camera telescopeCamera;  // Cámara del telescopio
     public Camera playerCamera;     // Cámara del jugador (asignar desde inspector)
+
+
+    [Header("Canva")]
+    public GameObject canva;
+    public TMP_Text textAngleX;
+    public TMP_Text textAngleY;
+
 
     private Quaternion initialRotation;
     private Vector2 currentAngles = Vector2.zero;
@@ -20,7 +29,7 @@ public class TelescopeController : MonoBehaviour
     void Awake()
     {
         initialRotation = transform.localRotation;
-
+        canva.SetActive(false);
         // Asegurarse de que la cámara del telescopio esté desactivada al inicio
         if (telescopeCamera == null)
             telescopeCamera = GetComponent<Camera>();
@@ -45,6 +54,7 @@ public class TelescopeController : MonoBehaviour
                 playerCamera.enabled = false;
 
             telescopeCamera.enabled = true;
+            canva.SetActive(true);
         }
     }
 
@@ -56,6 +66,7 @@ public class TelescopeController : MonoBehaviour
 
             // Restaurar cámaras
             telescopeCamera.enabled = false;
+            canva.SetActive(false);
 
             if (playerCamera != null)
                 playerCamera.enabled = true;
@@ -106,7 +117,7 @@ public class TelescopeController : MonoBehaviour
         Ray ray = telescopeCamera.ScreenPointToRay(Input.mousePosition);
         int layer = LayerMask.GetMask("Barco");
 
-        if (Physics.Raycast(ray, out RaycastHit hit, 400f, layer))
+        if (Physics.Raycast(ray, out RaycastHit hit, 800f, layer))
         {
             Vector3 targetPos = hit.point;
             Vector3 cannonPos = proyectileOrigin.transform.position; // Posición del cañón
@@ -115,7 +126,7 @@ public class TelescopeController : MonoBehaviour
             Vector3 horizontalDiff = new Vector3(targetPos.x - cannonPos.x, 0, targetPos.z - cannonPos.z);
             Quaternion lookRotation = Quaternion.LookRotation(horizontalDiff);
             float angleY = lookRotation.eulerAngles.y;
-
+            textAngleY.text = "Y ANGLE: " + angleY.ToString();
             // 2. Calcular la distancia horizontal y la diferencia de altura (Y)
             float horizontalDistance = horizontalDiff.magnitude;
             float heightDifference = targetPos.y - cannonPos.y;
@@ -144,6 +155,7 @@ public class TelescopeController : MonoBehaviour
 
             // Elegimos el ángulo menor
             float angleX = Mathf.Min(angleXRad1, angleXRad2) * Mathf.Rad2Deg;
+            textAngleX.text = "X ANGLE: " + angleX.ToString();
             Debug.Log($"Ángulo de elevación corregido (X): {angleX}°");
 
             Debug.Log($"Ángulo horizontal (Y): {angleY}°");
