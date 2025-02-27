@@ -34,7 +34,7 @@ public class HandleInteract : MonoBehaviour, IInteractable
         
         if (Quaternion.Angle(handleGameObject.transform.localRotation, finalRotationQuat) > 2)
         {
-            municion.puerta_abierta = true;
+            RecargarMunicion.puerta_abierta = true;
         
             while (Quaternion.Angle(handleGameObject.transform.localRotation, finalRotationQuat) > 2)
             {
@@ -45,7 +45,7 @@ public class HandleInteract : MonoBehaviour, IInteractable
         
         else
         {
-            municion.puerta_abierta = false;
+            RecargarMunicion.puerta_abierta = false;
             while (Quaternion.Angle(handleGameObject.transform.localRotation, initialRotationQuat) > 2)
             {
                 handleGameObject.transform.localRotation = Quaternion.Slerp(handleGameObject.transform.localRotation, initialRotationQuat, Time.deltaTime * openSpeed);

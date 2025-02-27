@@ -6,7 +6,7 @@ public class RecargarMunicion : MonoBehaviour
     public GameObject prefabASpawnear;
     private bool estaEnContactoConMunicion = false;
     private GameObject municionActual;
-    public bool puerta_abierta { get; set; } = false;
+    public static bool puerta_abierta { get; set; } = false;
     public ControladorDisparos disparo;
 
 
@@ -38,7 +38,7 @@ public class RecargarMunicion : MonoBehaviour
             // Spawnear el prefab en la posición de este objeto
             GameObject objetoInstanciado = Instantiate(prefabASpawnear, transform.position, transform.rotation);
             objetoInstanciado.transform.SetParent(transform);
-
+            estaEnContactoConMunicion = false;
             // Destruir el objeto de munición
             Destroy(municionActual);
         }

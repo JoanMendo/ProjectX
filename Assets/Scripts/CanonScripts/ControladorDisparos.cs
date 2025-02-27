@@ -112,9 +112,8 @@ public class ControladorDisparos : MonoBehaviour
     public void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.F) && !RecargarMunicion.puerta_abierta)
         {
-            Debug.Log("enteoria se esta disparando");
             prepararDisparo();
         }
     }
