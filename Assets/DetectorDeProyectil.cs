@@ -6,7 +6,7 @@ public class DetectorDeProyectil : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Projectil"))
         {
-            Debug.Log("Objetivo alcanzado");
+            Debug.Log("Objetivo alcanzdo");
         }
     }
 }
