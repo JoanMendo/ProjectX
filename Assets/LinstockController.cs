@@ -19,6 +19,7 @@ public class LinstockController : MonoBehaviour
         holdPosition.localPosition = pos; 
     }
 
+
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -35,8 +36,20 @@ public class LinstockController : MonoBehaviour
 
         if (isHolding && linstock != null)
         {
-            linstock.transform.position = holdPosition.position;
-            linstock.transform.rotation = holdPosition.rotation;
+            // Posición base desde el punto de sujeción
+            Vector3 adjustedPosition = holdPosition.position;
+
+            // Aplicar los ajustes específicos en coordenadas locales de la cámara
+            adjustedPosition += playerCamera.transform.up * -0.2f;      // Y: -0.2 (hacia abajo)
+            adjustedPosition += playerCamera.transform.forward * 1.3f; // Z: -1.0 (hacia atrás)
+
+            // Aplicar la posición ajustada
+            linstock.transform.position = adjustedPosition;
+
+            // Mantener la rotación como en la opción 3
+            Quaternion baseRotation = playerCamera.transform.rotation;
+            Quaternion offsetRotation = Quaternion.Euler(90, 0, 0); // Ajusta estos valores según necesites
+            linstock.transform.rotation = baseRotation * offsetRotation;
         }
     }
 
@@ -47,11 +60,21 @@ public class LinstockController : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, pickupDistance, layer))
         {
             linstock = hit.collider.gameObject;
+
             Rigidbody rb = linstock.GetComponent<Rigidbody>();
             if (rb != null)
             {
-                rb.isKinematic = true; // Desactiva la física mientras está en la mano
+                rb.isKinematic = true;
+                Physics.IgnoreCollision(linstock.GetComponent<Collider>(),
+                                       GetComponent<Collider>(), true);
             }
+
+            // Usar worldPositionStays = false para que adopte la rotación del padre
+            linstock.transform.SetParent(holdPosition, false);
+
+            // Ajustar la rotación local si es necesario
+            linstock.transform.localRotation = Quaternion.identity;
+
             isHolding = true;
         }
     }
@@ -60,11 +83,18 @@ public class LinstockController : MonoBehaviour
     {
         if (linstock != null)
         {
+            // Desacoplar del punto de sujeción
+            linstock.transform.SetParent(null);
+
             Rigidbody rb = linstock.GetComponent<Rigidbody>();
             if (rb != null)
             {
-                rb.isKinematic = false; // Reactiva la física al soltar
+                rb.isKinematic = false;
+                // Reactivar colisiones
+                Physics.IgnoreCollision(linstock.GetComponent<Collider>(),
+                                       GetComponent<Collider>(), false);
             }
+
             isHolding = false;
             linstock = null;
         }

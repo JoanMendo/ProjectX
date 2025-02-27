@@ -7,7 +7,6 @@ public class ParabolicThrow : MonoBehaviour
 {
     // Tiempo deseado para alcanzar el objetivo
     private Rigidbody _rb;
-    private GameObject objective;
     private GameObject canyon;
 
 
@@ -18,8 +17,8 @@ public class ParabolicThrow : MonoBehaviour
     void Awake()
     {
         _rb = GetComponent<Rigidbody>();
-         objective = GameObject.Find("Objetivo");
-        canyon = GameObject.Find("Canon");
+
+        canyon = GameObject.Find("posicion_disparo");
      
     }
     void Start()

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - municion
   - Ship
+  - Projectil
   layers:
   - Default
   - TransparentFX
@@ -18,7 +19,7 @@ TagManager:
   - CannonDoor
   - VerticalAim
   - Barco
-  - 
+  - Linstock
   - 
   - 
   - 

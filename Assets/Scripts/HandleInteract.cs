@@ -7,6 +7,7 @@ public class HandleInteract : MonoBehaviour, IInteractable
 {
     public float openSpeed = 5;
     public GameObject handleGameObject;
+    public RecargarMunicion municion;
 
     private Coroutine coroutine;
     private Vector3 initialRotation;
@@ -16,7 +17,7 @@ public class HandleInteract : MonoBehaviour, IInteractable
     {
         initialRotation = new Vector3(0,0,0);
         finalRotation = new Vector3(0,100,0);
-
+        
     }
     public void Interact()
     {
@@ -33,6 +34,8 @@ public class HandleInteract : MonoBehaviour, IInteractable
         
         if (Quaternion.Angle(handleGameObject.transform.localRotation, finalRotationQuat) > 2)
         {
+            municion.puerta_abierta = true;
+        
             while (Quaternion.Angle(handleGameObject.transform.localRotation, finalRotationQuat) > 2)
             {
                 handleGameObject.transform.localRotation = Quaternion.Slerp(handleGameObject.transform.localRotation, finalRotationQuat, Time.deltaTime * openSpeed);
@@ -42,6 +45,7 @@ public class HandleInteract : MonoBehaviour, IInteractable
         
         else
         {
+            municion.puerta_abierta = false;
             while (Quaternion.Angle(handleGameObject.transform.localRotation, initialRotationQuat) > 2)
             {
                 handleGameObject.transform.localRotation = Quaternion.Slerp(handleGameObject.transform.localRotation, initialRotationQuat, Time.deltaTime * openSpeed);

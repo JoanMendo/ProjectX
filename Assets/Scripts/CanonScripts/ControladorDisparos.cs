@@ -5,15 +5,15 @@ using UnityEngine;
 
 public class ControladorDisparos : MonoBehaviour
 {
-    public GameObject cilindro;
+    
     public GameObject posicion_de_disparo;
     public GameObject restosDisparo;
-    public Transform restosSpawning;
+    public GameObject restosSpawning;
+    private Transform RestosSpawning;
     public Vector3 targetPosition;
     public GameObject projectil;
-    public float fuerzaProyectil = 20f;
-    public bool limpiado = true;
-    public bool cargado = true;
+    public bool limpiado = false;
+    public bool cargado { get; set; } = false;
     public AudioSource sonido;
     public LineRenderer lineRenderer; // Para proyectar la trayectoria
     public int puntosTrayectoria = 30; // Número de puntos en la línea
@@ -21,109 +21,102 @@ public class ControladorDisparos : MonoBehaviour
     public Camera playerCamera; // Cámara del jugador
     public LayerMask capasDeColision; // Capas con las que la trayectoria puede colisionar
 
-    private List<GameObject>  restos = new List<GameObject>();
+    private List<GameObject> restos = new List<GameObject>();
+
+    public void Start()
+    {
+         RestosSpawning = restosSpawning.transform;
+    }
+
+
 
     public void prepararDisparo()
     {
-        if (projectil == null || cilindro == null)
+        if (projectil == null)
         {
-
             return;
         }
+        Debug.Log(cargado);
 
-        if (!limpiado || !cargado)
+        // Inicializar la lista si es null
+        if (restos == null)
         {
-
-            return;
+            restos = new List<GameObject>();
+            limpiado = true; // Si no hay restos, está limpio
         }
-
-        foreach (GameObject resto in restos)
+        // Verificar si hay restos y manejarlos correctamente
+        else if (restos.Count > 0)
         {
-            if (Vector3.Distance(resto.transform.position, restosSpawning.position) < 4f)
+            // Crear una lista para los restos a eliminar
+            List<GameObject> restosAEliminar = new List<GameObject>();
+            limpiado = true; // Asumimos que está limpio inicialmente
+
+            foreach (GameObject resto in restos)
             {
-                limpiado = false; break;
+                if (resto == null)
+                {
+                    restosAEliminar.Add(resto);
+                    continue;
+                }
+
+                if (Vector3.Distance(resto.transform.position, RestosSpawning.position) < 4f)
+                {
+                    limpiado = false; // Hay restos cercanos
+                    break; // No necesitamos seguir verificando
+                }
+                else
+                {
+                    restosAEliminar.Add(resto); // Marcar para eliminar
+                }
             }
-            else
+
+            // Eliminar los restos marcados fuera del bucle foreach
+            foreach (GameObject resto in restosAEliminar)
             {
-                limpiado = true;
                 restos.Remove(resto);
             }
         }
-
-        GameObject bullet = Instantiate(projectil, posicion_de_disparo.transform.position, Quaternion.identity);
-        
-        if (restosDisparo != null && restosSpawning != null)
+        else
         {
-            for (int i = 0; i < UnityEngine.Random.Range(4,9); i++)
+            // Si la lista está vacía, consideramos que está limpio
+            limpiado = true;
+        }
+
+        // Verificar condiciones para disparar
+        if (!limpiado || !cargado)
+        {
+            return;
+        }
+
+        // Crear el proyectil
+        GameObject bullet = Instantiate(projectil, posicion_de_disparo.transform.position, Quaternion.identity);
+
+        // Destruir el primer hijo de restosSpawning
+        if (restosSpawning.transform.childCount > 0)
+        {
+            Destroy(restosSpawning.transform.GetChild(0).gameObject);
+        }
+
+        // Generar nuevos restos después de disparar
+        if (restosDisparo != null && RestosSpawning != null)
+        {
+            for (int i = 0; i < UnityEngine.Random.Range(4, 9); i++)
             {
-                GameObject resto = Instantiate(restosDisparo, restosSpawning.position, Quaternion.identity);
+                GameObject resto = Instantiate(restosDisparo, RestosSpawning.position, Quaternion.identity);
                 float randomScale = UnityEngine.Random.Range(0.5f, 0.9f);
                 resto.transform.localScale = new Vector3(randomScale, randomScale, randomScale);
                 restos.Add(resto);
             }
         }
 
-        sonido.Play();   
+        // Marcar como no cargado después de disparar
+        cargado = false;
     }
 
-    private void MostrarTrayectoria()
-    {
-        if (cilindro == null || projectil == null || lineRenderer == null)
-        {
-
-            return;
-        }
-
-        if (playerCamera.isActiveAndEnabled)
-        {
-            lineRenderer.enabled = false;
-        }
-        else
-        {
-            lineRenderer.enabled = true;
-        }
-            // Configurar los parámetros iniciales
-        Vector3 posicionInicial = posicion_de_disparo.transform.position;
-        Vector3 direccion = cilindro.transform.forward.normalized;
-       
-        Vector3 velocidadProyectil = fuerzaProyectil * direccion;
-
-
-        // Configurar LineRenderer
-        lineRenderer.positionCount = puntosTrayectoria;
-
-
-        for (int i = 0; i < puntosTrayectoria; i++)
-        {
-            // Tiempo basado en el índice
-            float tiempo = i * (tiempoSimulacion / puntosTrayectoria);
-
-            // Calcular posición usando física
-            Vector3 desplazamiento = velocidadProyectil * tiempo + 0.5f * Physics.gravity * tiempo * tiempo;
-            Vector3 nuevaPosicion = posicionInicial + desplazamiento;
-
-            lineRenderer.SetPosition(i, nuevaPosicion);
-
-            // Verificar colisión con Raycast
-            if (i > 0)
-            {
-                Vector3 direccionRay = nuevaPosicion - lineRenderer.GetPosition(i - 1);
-                float distancia = direccionRay.magnitude;
-
-                if (Physics.Raycast(lineRenderer.GetPosition(i - 1), direccionRay.normalized, out RaycastHit hit, distancia, capasDeColision))
-                {
-                    lineRenderer.positionCount = i + 1;
-                    lineRenderer.SetPosition(i, hit.point);
-                    break;
-                }
-            }
-        }
-    }
 
 
     public void Update()
     {
-        MostrarTrayectoria();
 
         if (Input.GetKeyDown(KeyCode.F))
         {
