@@ -28,10 +28,6 @@ public class RecargarMunicion : MonoBehaviour
         {
             estaEnContactoConMunicion = false;
 
-            Destroy(municionActual);
-
-            
-
         }
     }
 

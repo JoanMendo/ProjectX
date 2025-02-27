@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ControladorDisparos : MonoBehaviour
@@ -14,13 +15,7 @@ public class ControladorDisparos : MonoBehaviour
     public GameObject projectil;
     public bool limpiado = false;
     public bool cargado { get; set; } = false;
-    public AudioSource sonido;
-    public LineRenderer lineRenderer; // Para proyectar la trayectoria
-    public int puntosTrayectoria = 30; // Número de puntos en la línea
-    public float tiempoSimulacion = 2f; // Tiempo máximo para simular la trayectoria
-    public Camera playerCamera; // Cámara del jugador
-    public LayerMask capasDeColision; // Capas con las que la trayectoria puede colisionar
-
+    
     private List<GameObject> restos = new List<GameObject>();
 
     public void Start()
@@ -36,7 +31,7 @@ public class ControladorDisparos : MonoBehaviour
         {
             return;
         }
-        Debug.Log(cargado);
+
 
         // Inicializar la lista si es null
         if (restos == null)
@@ -59,21 +54,19 @@ public class ControladorDisparos : MonoBehaviour
                     continue;
                 }
 
-                if (Vector3.Distance(resto.transform.position, RestosSpawning.position) < 4f)
+                if (Vector3.Distance(resto.transform.position, RestosSpawning.position) < 2f)
                 {
                     limpiado = false; // Hay restos cercanos
-                    break; // No necesitamos seguir verificando
+                    DeathManager.Instance.OnDeath();
                 }
-                else
-                {
                     restosAEliminar.Add(resto); // Marcar para eliminar
-                }
             }
 
             // Eliminar los restos marcados fuera del bucle foreach
             foreach (GameObject resto in restosAEliminar)
             {
                 restos.Remove(resto);
+                Destroy(resto);
             }
         }
         else
@@ -103,8 +96,9 @@ public class ControladorDisparos : MonoBehaviour
             for (int i = 0; i < UnityEngine.Random.Range(4, 9); i++)
             {
                 GameObject resto = Instantiate(restosDisparo, RestosSpawning.position, Quaternion.identity);
-                float randomScale = UnityEngine.Random.Range(0.5f, 0.9f);
-                resto.transform.localScale = new Vector3(randomScale, randomScale, randomScale);
+                float randomScale = UnityEngine.Random.Range(0.4f, 1.2f);
+                resto.transform.localScale *= randomScale;
+                resto.GetComponent<Rigidbody>().AddForce(resto.transform.up * UnityEngine.Random.Range(0.1f, 0.3f), ForceMode.Impulse);
                 restos.Add(resto);
             }
         }
