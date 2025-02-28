@@ -33,9 +33,13 @@ public class CanonCameraMovement : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
-            // Leer la entrada del usuario
-            float inputX = Input.GetAxisRaw("Horizontal");
-            float inputY = Input.GetAxisRaw("Vertical");
+            float inputX = 0f;
+            float inputY = 0f;
+
+            if (Input.GetKey(KeyCode.LeftArrow)) inputX = -1f;
+            if (Input.GetKey(KeyCode.RightArrow)) inputX = 1f;
+            if (Input.GetKey(KeyCode.UpArrow)) inputY = 1f;
+            if (Input.GetKey(KeyCode.DownArrow)) inputY = -1f;
 
             // Actualizar el offset de rotación acumulado
             // Nota: Se invierte el inputY para que mover hacia arriba rote hacia abajo (y viceversa),

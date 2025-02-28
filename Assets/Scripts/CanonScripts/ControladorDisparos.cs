@@ -109,12 +109,5 @@ public class ControladorDisparos : MonoBehaviour
 
 
 
-    public void Update()
-    {
-
-        if (Input.GetKeyDown(KeyCode.F) && !RecargarMunicion.puerta_abierta)
-        {
-            prepararDisparo();
-        }
-    }
+    
 }

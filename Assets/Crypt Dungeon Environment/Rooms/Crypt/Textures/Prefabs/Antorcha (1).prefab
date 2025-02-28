@@ -186,7 +186,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hand_TourchFire
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 9209361080586078616, guid: a56274021f37e77448276bab2477b3e3, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
