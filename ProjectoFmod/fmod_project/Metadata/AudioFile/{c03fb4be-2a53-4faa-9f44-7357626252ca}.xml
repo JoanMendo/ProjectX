@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{c03fb4be-2a53-4faa-9f44-7357626252ca}">
+		<property name="assetPath">
+			<value>zapsplat_science_fiction_robot_small_cute_baby_walking_metal_feet_fast_97830.mp3</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>5.1840000000000002</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{330dc41c-9eb6-466b-8a0f-587d5b1e7b20}</destination>
+		</relationship>
+	</object>
+</objects>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="DataFile" id="{390ba860-9abf-4e67-8f5b-5c1cfd621a31}">
+		<property name="assetPath">
+			<value>__MACOSX/99Sounds Water Sounds/._WATERSOUNDS_metadata.pdf</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{330dc41c-9eb6-466b-8a0f-587d5b1e7b20}</destination>
+		</relationship>
+	</object>
+</objects>

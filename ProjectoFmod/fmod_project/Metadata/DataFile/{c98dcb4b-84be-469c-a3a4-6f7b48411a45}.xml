@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="DataFile" id="{c98dcb4b-84be-469c-a3a4-6f7b48411a45}">
+		<property name="assetPath">
+			<value>99Sounds Water Sounds/WATERSOUNDS_metadata.xlsx</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{330dc41c-9eb6-466b-8a0f-587d5b1e7b20}</destination>
+		</relationship>
+	</object>
+</objects>

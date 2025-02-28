@@ -412,6 +412,7 @@ MonoBehaviour:
   - {fileID: 7318460024127901086}
   - {fileID: 8584704951185259116}
   - {fileID: 1409956829827975168}
+  stabilizationForce: 2
 --- !u!114 &5189422340480675235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -425,7 +426,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetPosition: {x: 0, y: 0, z: 0}
-  moveSpeed: 1
   rotationSpeed: 1
   arrivalThreshold: 20
 --- !u!65 &5734433240550439844
@@ -447,8 +447,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 21.398272, y: 43.054817, z: 104.94561}
-  m_Center: {x: -0.000005068633, y: 13.202682, z: 18.588955}
+  m_Size: {x: 30.2, y: 43.054817, z: 104.94561}
+  m_Center: {x: -0.000005068633, y: 27.49, z: 18.588955}
 --- !u!114 &4459624608056251528
 MonoBehaviour:
   m_ObjectHideFlags: 0

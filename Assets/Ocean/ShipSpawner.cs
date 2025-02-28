@@ -32,7 +32,7 @@ public class ShipSpawner : MonoBehaviour
     void SpawnShipRandomly()
     {
         // Seleccionar un punto de spawn aleatorio
-        int randomIndex = Random.Range(0, spawnPoints.Length);
+        int randomIndex = currentRound;
 
         // Instanciar el barco en el punto de spawn seleccionado
         Instantiate(shipPrefab, spawnPoints[randomIndex].position, spawnPoints[randomIndex].rotation);

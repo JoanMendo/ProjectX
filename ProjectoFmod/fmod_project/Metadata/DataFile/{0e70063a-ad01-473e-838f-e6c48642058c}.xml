@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="DataFile" id="{0e70063a-ad01-473e-838f-e6c48642058c}">
+		<property name="assetPath">
+			<value>__MACOSX/99Sounds Water Sounds/._WATRFlow_Gentle Water Flow 01_SLK_WATERSOUNDS.wav</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{330dc41c-9eb6-466b-8a0f-587d5b1e7b20}</destination>
+		</relationship>
+	</object>
+</objects>

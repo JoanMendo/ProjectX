@@ -1,3 +1,4 @@
+
 using Ditzelgames;
 using System;
 using System.Collections;
@@ -14,6 +15,11 @@ public class WaterFloat : MonoBehaviour
     public bool AttachToSurface = false;
     public Transform[] FloatPoints;
 
+    // Altura inicial que queremos mantener
+    private float initialHeight;
+    // Factor para controlar la fuerza de estabilización
+    public float stabilizationForce = 2.0f;
+
     //used components
     protected Rigidbody Rigidbody;
     protected Waves Waves;
@@ -29,7 +35,6 @@ public class WaterFloat : MonoBehaviour
 
     public Vector3 Center { get { return transform.position + centerOffset; } }
 
-    // Start is called before the first frame update
     void Awake()
     {
         //get components
@@ -43,14 +48,16 @@ public class WaterFloat : MonoBehaviour
             WaterLinePoints[i] = FloatPoints[i].position;
         centerOffset = PhysicsHelper.GetCenter(WaterLinePoints) - transform.position;
 
+        // Guardar la altura inicial
+        initialHeight = transform.position.y;
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         //default water surface
         var newWaterLine = 0f;
         var pointUnderWater = false;
+        var pointsUnderWaterCount = 0;
 
         //set WaterLinePoints and WaterLine
         for (int i = 0; i < FloatPoints.Length; i++)
@@ -59,8 +66,12 @@ public class WaterFloat : MonoBehaviour
             WaterLinePoints[i] = FloatPoints[i].position;
             WaterLinePoints[i].y = Waves.GetHeight(FloatPoints[i].position);
             newWaterLine += WaterLinePoints[i].y / FloatPoints.Length;
+
             if (WaterLinePoints[i].y > FloatPoints[i].position.y)
+            {
                 pointUnderWater = true;
+                pointsUnderWaterCount++;
+            }
         }
 
         var waterLineDelta = newWaterLine - WaterLine;
@@ -69,35 +80,60 @@ public class WaterFloat : MonoBehaviour
         //compute up vector
         TargetUp = PhysicsHelper.GetNormal(WaterLinePoints);
 
-        //gravity
-        var gravity = Physics.gravity;
-        Rigidbody.drag = AirDrag;
-        if (WaterLine > Center.y)
-        {
-            Rigidbody.drag = WaterDrag;
-            //under water
-            if (AttachToSurface)
-            {
-                //attach to water surface
-                Rigidbody.position = new Vector3(Rigidbody.position.x, WaterLine - centerOffset.y, Rigidbody.position.z);
-            }
-            else
-            {
-                //go up
-                gravity = AffectDirection ? TargetUp * -Physics.gravity.y : -Physics.gravity;
-                transform.Translate(Vector3.up * waterLineDelta * 0.9f);
-            }
-        }
-        Rigidbody.AddForce(gravity * Mathf.Clamp(Mathf.Abs(WaterLine - Center.y), 0, 1));
+        // Calcular la diferencia entre la altura actual y la inicial
+        float heightDifference = transform.position.y - initialHeight;
 
-        //rotation
+        // Aplicar resistencia al aire o agua
+        Rigidbody.drag = pointUnderWater ? WaterDrag : AirDrag;
+
+        // Calcular la fuerza de estabilización para mantener la altura inicial
+        Vector3 stabilizingForce = Vector3.zero;
+
         if (pointUnderWater)
         {
-            //attach to water surface
+            // Si está bajo el agua, aplicar fuerza hacia arriba proporcional a la profundidad
+            float buoyancyFactor = (float)pointsUnderWaterCount / FloatPoints.Length;
+            Vector3 upForce = (AffectDirection ? TargetUp : Vector3.up) * buoyancyFactor * stabilizationForce;
+
+            // Si está por debajo de la altura inicial, aplicar más fuerza hacia arriba
+            if (heightDifference < 0)
+            {
+                stabilizingForce = upForce * Mathf.Abs(heightDifference) * 2.0f;
+            }
+            // Si está por encima de la altura inicial, reducir la fuerza hacia arriba
+            else
+            {
+                stabilizingForce = -Vector3.up * heightDifference * stabilizationForce;
+            }
+        }
+        else
+        {
+            // Si está completamente fuera del agua, aplicar gravedad normal
+            stabilizingForce = Physics.gravity;
+
+            // Si está por debajo de la altura inicial y cerca del agua, aplicar una pequeña fuerza hacia arriba
+            if (heightDifference < 0 && Mathf.Abs(WaterLine - Center.y) < 1.0f)
+            {
+                stabilizingForce += Vector3.up * Mathf.Abs(heightDifference) * stabilizationForce * 0.5f;
+            }
+        }
+
+        // Aplicar la fuerza estabilizadora
+        Rigidbody.AddForce(stabilizingForce, ForceMode.Acceleration);
+
+        // Aplicar amortiguación vertical para evitar rebotes
+        Rigidbody.velocity = new Vector3(
+            Rigidbody.velocity.x,
+            Rigidbody.velocity.y * 0.95f, // Reducir velocidad vertical gradualmente
+            Rigidbody.velocity.z
+        );
+
+        //rotation - mantener orientación con la superficie del agua
+        if (pointUnderWater)
+        {
             TargetUp = Vector3.SmoothDamp(transform.up, TargetUp, ref smoothVectorRotation, 0.2f);
             Rigidbody.rotation = Quaternion.FromToRotation(transform.up, TargetUp) * Rigidbody.rotation;
         }
-
     }
 
     private void OnDrawGizmos()
@@ -111,9 +147,8 @@ public class WaterFloat : MonoBehaviour
             if (FloatPoints[i] == null)
                 continue;
 
-            if (Waves != null)
+            if (Waves != null && Application.isPlaying)
             {
-
                 //draw cube
                 Gizmos.color = Color.red;
                 Gizmos.DrawCube(WaterLinePoints[i], Vector3.one * 0.3f);
@@ -122,7 +157,6 @@ public class WaterFloat : MonoBehaviour
             //draw sphere
             Gizmos.color = Color.green;
             Gizmos.DrawSphere(FloatPoints[i].position, 0.1f);
-
         }
 
         //draw center
@@ -131,6 +165,13 @@ public class WaterFloat : MonoBehaviour
             Gizmos.color = Color.red;
             Gizmos.DrawCube(new Vector3(Center.x, WaterLine, Center.z), Vector3.one * 1f);
             Gizmos.DrawRay(new Vector3(Center.x, WaterLine, Center.z), TargetUp * 1f);
+
+            // Visualizar la altura inicial
+            Gizmos.color = Color.blue;
+            Gizmos.DrawLine(
+                new Vector3(Center.x - 1, initialHeight, Center.z),
+                new Vector3(Center.x + 1, initialHeight, Center.z)
+            );
         }
     }
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="DataFile" id="{689cfaef-5cdf-4fca-a7ac-577c579c2ac0}">
+		<property name="assetPath">
+			<value>__MACOSX/99Sounds Water Sounds/._WATRSurf_Ocean Wave On Rocks 01_SLK_WATERSOUNDS.wav</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{330dc41c-9eb6-466b-8a0f-587d5b1e7b20}</destination>
+		</relationship>
+	</object>
+</objects>

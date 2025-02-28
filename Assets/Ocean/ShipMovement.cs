@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class ShipMovement : MonoBehaviour
 {
     public Vector3 targetPosition;      // El punto de destino
-    public float MoveSpeed { get; set; } = 2f;      // Velocidad de movimiento constante
+    public float MoveSpeed { get; set; } = 1f;      // Velocidad de movimiento constante
     public float rotationSpeed = 1f;    // Velocidad de rotación
     private Rigidbody _rigidbody;        // El Rigidbody del barco
     public float arrivalThreshold = 10f; // Umbral de distancia para considerar que el barco ha llegado al destino

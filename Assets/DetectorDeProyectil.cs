@@ -30,12 +30,14 @@ public class DetectorDeProyectil : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+
+
+    public void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Projectil"))
         {
             Debug.Log("Objetivo alcanzado");
-
+            AudioManager.Instance.numero++;
             // Verificar si se encontró el componente ShipMovement
             if (shipMovement != null)
             {

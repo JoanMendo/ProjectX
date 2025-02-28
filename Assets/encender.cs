@@ -29,6 +29,7 @@ public class encender : MonoBehaviour
     private IEnumerator quemandoMecha()
     {
         fire.SetActive(true);
+        AudioManager.Instance.PlaySoundAtEmitter(5, 6);
         yield return new WaitForSeconds(2);
         fire.SetActive(false);
         disparos.prepararDisparo();

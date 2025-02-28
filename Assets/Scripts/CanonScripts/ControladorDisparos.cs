@@ -83,6 +83,7 @@ public class ControladorDisparos : MonoBehaviour
 
         // Crear el proyectil
         GameObject bullet = Instantiate(projectil, posicion_de_disparo.transform.position, Quaternion.identity);
+        AudioManager.Instance.PlaySoundAtEmitter(6, 5);
 
         // Destruir el primer hijo de restosSpawning
         if (restosSpawning.transform.childCount > 0)
@@ -93,7 +94,7 @@ public class ControladorDisparos : MonoBehaviour
         // Generar nuevos restos después de disparar
         if (restosDisparo != null && RestosSpawning != null)
         {
-            for (int i = 0; i < UnityEngine.Random.Range(4, 9); i++)
+            for (int i = 0; i < UnityEngine.Random.Range(1, 4); i++)
             {
                 GameObject resto = Instantiate(restosDisparo, RestosSpawning.position, Quaternion.identity);
                 float randomScale = UnityEngine.Random.Range(0.4f, 1.2f);
